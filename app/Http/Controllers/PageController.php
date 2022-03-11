@@ -13,4 +13,11 @@ class PageController extends Controller {
     return view('pages.index');
   }
 
+  /**
+   * Megjeleníti a bejelentkezés fület.
+   */
+  public function displayLogin() {
+    return view('pages.login');
+  }
+
 }

@@ -10,14 +10,10 @@ body {
   min-height: 100vh;
   background-color: #e2e8f0;
 }
-
-.container {
+.base-container {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 }
+
 
 h1 {
   font-size: 4.5rem;
@@ -26,7 +22,7 @@ h1 {
   margin-bottom: 30px;
 }
 
-img {
+.globe {
   width: 300px;
   height: 300px;
   animation-name: spin;
@@ -42,4 +38,41 @@ img {
   to {
     transform:rotate(360deg);
   }
+}
+
+
+/* LOGIN */
+.login {
+    background: #FFF;
+    width: 390px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 23px;
+    padding:10px;
+}
+
+.login_button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px auto;
+
+    color: #FFF;
+
+    background: rgb(2,0,36);
+    background: linear-gradient(61deg, rgba(2,0,36,1) 13%, rgba(8,7,105,1) 88%, rgba(9,9,121,1) 100%, rgba(0,212,255,1) 100%);
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 1.5rem;
+}
+
+.login_button:hover {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+}
+
+/* LOGIN */
+
+
+.sidebar {
+  min-height: 100vh;
 }
