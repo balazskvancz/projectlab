@@ -11,30 +11,38 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * A felhasználók sémája.
  */
-class User extends Authenticatable
-{
-    use HasApiTokens, HasFactory, Notifiable;
+class User extends Authenticatable {
+  use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * Fillables.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'username',
-        'password',
-        'role'
-    ];
+  /**
+   * Fillables.
+   *
+   * @var array<int, string>
+   */
+  protected $fillable = [
+    'username',
+    'password',
+    'role'
+  ];
 
-    /**
-     * Nem sorosítható fieldek.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+ /**
+  * Nem sorosítható fieldek.
+  *
+  * @var array<int, string>
+  */
+  protected $hidden = [
+    'password',
+    'remember_token',
+  ];
 
+  /**
+   * Visszaadja az összes, az adott user által
+   * felvett terméket.
+   *
+   * @return \App\Models\Product[]
+   */
+  public function getProduct() {
 
+    return $this->hasMany(\App\Models\Product::class, 'creatorId', 'id');
+  }
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 
+use \App\Models\Login;
 use \App\Models\User;
 
 /**
@@ -19,8 +20,21 @@ class AuthController extends Controller
   /**
    * Megjeleníti a bejelentkezés nézetet.
    */
-  public function displayLogin()
-  {
+  public function displayLogin() {
+
+    // Van már bejelentkezett user?
+    if (auth()->user()) {
+
+
+      if (auth()->user()->role == 2) {
+        return redirect()->route('admin_dashboard');
+      }
+
+      return redirect()->route('client_dashboard');
+    }
+
+
+    // Ha nincs, akkor adjuk vissza a bejelentkezés view-t.
     return view('pages.login');
   }
 
@@ -44,9 +58,12 @@ class AuthController extends Controller
     // Ha sikerül a bejelentkezés.
     if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
 
-      // Jogosultság szerinti redirect.
-      if (auth()->user()->role == 2) {
+      // Elmentünk egy bejelentkezési statisztikát.
+      Login::create([
+        'userId' => auth()->user()->id
+      ]);
 
+      if (auth()->user()->role == 2) {
         return redirect()->route('admin_dashboard');
       }
 
@@ -64,10 +81,8 @@ class AuthController extends Controller
    * @param Request A bejövő request.
    */
   public function logout(Request $request) {
-
-    if (auth()->logout()) {
-      return redirect()->route('login')->with('Sikeres kijelentkezés.');
-    }
+    auth()->logout();
+    return redirect()->route('login')->with('Sikeres kijelentkezés.');
   }
 
 
@@ -108,6 +123,13 @@ class AuthController extends Controller
 
 
     return redirect()->route('login');
+
+  }
+
+  /**
+   * Felhasználói jogosultság alapján irányítja tovább a bejelentkezett user-t.
+   */
+  public function redirectUser() {
 
   }
 }

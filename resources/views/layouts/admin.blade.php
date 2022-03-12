@@ -22,6 +22,11 @@
     </a>
   </li>
 
+ <li class="nav-item">
+    <a class="nav-link" href="{{route('admin_categories')}}">
+      <i class="bi bi-tag p-1"></i>Kategóriák
+    </a>
+  </li>
 
 
 

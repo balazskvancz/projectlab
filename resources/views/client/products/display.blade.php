@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.client')
 
-@section('admin_content')
+
+@section('client_content')
 
   <div class="card">
     <div class="card-header p-2">
@@ -15,7 +16,11 @@
           <h5 class="p-2">Termékek száma: <b>{{count($products)}}</b> db </h5>
         </div>
 
-
+        <div class="col-sm-6 text-end">
+          <button class="btn btn-success shadow-none"
+          data-bs-toggle="modal" data-bs-target="#newProductModal"
+          >Új termék felvétele <i class="bi bi-plus-circle"></i></button>
+        </div>
       </div>
 
       <hr class="my-3" />
@@ -24,7 +29,6 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th class="text-center">Felvivő</th>
               <th class="text-center">Cikkszám</th>
               <th class="text-center">Kategória</th>
               <th class="text-center">Megnevezés</th>
@@ -37,14 +41,21 @@
           <tbody>
             @foreach ($products as $product)
               <tr>
-                <td class="text-center align-middle">{{$product->getUser->username}}</td>
                 <td class="text-center align-middle">{{$product->sku}}</td>
                 <td class="text-center align-middle">{{$product->getCategory->name}}</td>
                 <td class="text-center align-middle">{{$product->name}}</td>
                 <td class="text-center align-middle">{{$product->description}}</td>
                 <td class="text-center align-middle">{{$product->price}}</td>
                 <td class="text-center">
-                  <button class="btn btn-lg shadow-none"><i class="bi bi-trash-fill"></i></button>
+                  <a href="/client/products/{{$product->id}}/edit">
+                    <button class="btn btn-lg shadow-none"><i class="bi bi-pencil-square"></i></button>
+                  </a>
+
+                  <form action="/client/products/{{$product->id}}/delete" method="POST"
+                    onsubmit="confirm('Biztosan törölni szeretnéd?')">
+                    @csrf
+                    <button class="btn btn-lg shadow-none" type="submit"><i class="bi bi-trash-fill"></i></button>
+                  </form>
                 </td>
               </tr>
 
@@ -55,5 +66,6 @@
     </div>
 
   </div>
-@endsection
 
+  @include('client.products.new_product_modal')
+@endsection

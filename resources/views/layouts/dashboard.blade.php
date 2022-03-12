@@ -23,6 +23,7 @@
 
          @yield('navbar_content')
 
+          <hr class="my-3" />
           <li class="nav-item">
             <form method="POST" action="{{route('logout')}}">
               @csrf
@@ -34,6 +35,27 @@
     </nav>
 
     <main role="main" class="col-md-10 ms-auto ">
+
+      @if(Session::Get('success') || Session::Get('fail'))
+      <div class="container mx-auto" id="customAlert">
+        <div class="col-sm-12 col-md-8 mx-auto mt-3">
+          <div class="card alert @if (Session::Get('success')) alert-success @else alert-danger @endif">
+            <div class="card-body ">
+              <h3 class="text-center fw-bold">
+                @if (Session::Get('success'))
+                  {{Session::Get('success')}}
+                @else
+                  {{Session::Get('fail')}}
+                @endif
+              </h3>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      @endif
+
+
       @yield('main_content')
     </main>
   </div>

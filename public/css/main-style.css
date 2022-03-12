@@ -76,3 +76,11 @@ h1 {
 .sidebar {
   min-height: 100vh;
 }
+
+.card {
+  border-radius: 17px;
+}
+
+.nav-link {
+  color: #000;
+}

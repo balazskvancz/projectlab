@@ -42,4 +42,12 @@ class Product extends Model
     public function getImages() {
       return $this->hasMany(\App\Models\ProductImage::class, 'productId', 'id');
     }
+
+    /**
+     * Visszadja, a hozzá tartozó kategóriát.
+     */
+    public function getCategory() {
+      return $this->hasOne(\App\Models\ProductCategory::class, 'id', 'categoryId');
+
+    }
 }
