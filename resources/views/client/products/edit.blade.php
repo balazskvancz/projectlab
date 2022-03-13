@@ -31,6 +31,41 @@
           </div>
 
       @endforeach
+
+      <hr class="my-3" />
+
+      <div class="row mt-4">
+        <div class="col-sm-12 p-4">
+          <h3 class="p-3">Feltöltött képek </h3>
+        </div>
+
+        <div class="col-sm-12 col-md-6 mx-auto">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th class="text-center">Kép</th>
+                  <th class="text-center">Törlés</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @foreach ($product->getImages as $image)
+                  <tr>
+                    <td class="text-center">
+                      <button class="btn btn-primary shadow-none">Megtekintés</button>
+                    </td>
+
+                    <td class="text-center">
+                      <button class="btn btn-danger shadow-none">Törlés</button>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="card-footer">

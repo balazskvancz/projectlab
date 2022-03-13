@@ -20,7 +20,7 @@
                   @endforeach
                 </select>
               @elseif ($key == 'description')
-                <textarea class="form-control shadow-none" rows=6 spellcheck="off" autocomplete="false"></textarea>
+                <textarea class="form-control shadow-none" name="{{$key}}" rows=6 spellcheck="off" autocomplete="false"></textarea>
               @else
                 <input type="text" class="form-control shadow-none" name="{{$key}}" />
               @endif

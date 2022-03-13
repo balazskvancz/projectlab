@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('product_categories', function (Blueprint $table) {
           $table->id();
           $table->string('name', 191)->unique();
+          $table->integer('deleted')->default(0);
           $table->timestamps();
         });
     }

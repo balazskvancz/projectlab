@@ -14,8 +14,7 @@ use \App\Models\User;
 /**
  * Authentikációval kapcsolatos routeok, requestek kezelése.
  */
-class AuthController extends Controller
-{
+class AuthController extends Controller {
 
   /**
    * Megjeleníti a bejelentkezés nézetet.
@@ -24,13 +23,9 @@ class AuthController extends Controller
 
     // Van már bejelentkezett user?
     if (auth()->user()) {
+      $route = auth()->user()->role == 2 ? 'admin_dashboard' : 'client_dashboard';
 
-
-      if (auth()->user()->role == 2) {
-        return redirect()->route('admin_dashboard');
-      }
-
-      return redirect()->route('client_dashboard');
+      return redirect()->route($route);
     }
 
 
@@ -47,14 +42,6 @@ class AuthController extends Controller
    */
   public function tryToLogin(Request $request) {
 
-    // Létezik ilyen user?
-    $user = User::where('username', '=', $request->username)->first();
-
-
-    if (is_null($user)) {
-      return redirect()->route('login')->with('error', 'Sikertelen bejelentkezés.'); //errorr,
-    }
-
     // Ha sikerül a bejelentkezés.
     if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
 
@@ -63,16 +50,14 @@ class AuthController extends Controller
         'userId' => auth()->user()->id
       ]);
 
-      if (auth()->user()->role == 2) {
-        return redirect()->route('admin_dashboard');
-      }
+      $route = auth()->user()->role == 2 ? 'admin_dashboard' : 'client_dashboard';
 
-      return redirect()->route('client_dashboard');
+      return redirect()->route($route);
     }
 
 
     // Ha nem sikerül bejelentkezni, akkor is, csak egyszerűen dobjuk vissza.
-    return redirect()->route('login')->with('error', 'Sikertelen bejelentkezés.'); //errorr,
+    return redirect()->route('login')->with('fail', 'Sikertelen bejelentkezés.'); //errorr,
   }
 
   /**
@@ -82,7 +67,7 @@ class AuthController extends Controller
    */
   public function logout(Request $request) {
     auth()->logout();
-    return redirect()->route('login')->with('Sikeres kijelentkezés.');
+    return redirect()->route('login')->with('success', 'Sikeres kijelentkezés.');
   }
 
 
@@ -123,13 +108,6 @@ class AuthController extends Controller
 
 
     return redirect()->route('login');
-
-  }
-
-  /**
-   * Felhasználói jogosultság alapján irányítja tovább a bejelentkezett user-t.
-   */
-  public function redirectUser() {
 
   }
 }

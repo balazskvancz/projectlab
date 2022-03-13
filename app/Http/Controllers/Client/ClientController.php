@@ -15,7 +15,6 @@ use \App\Models\ProductCategory;
  */
 class ClientController extends Controller {
 
-
   /**
    * Megjeleníti a dashboardot.
    */
@@ -26,9 +25,10 @@ class ClientController extends Controller {
       ['deleted', '=', 0]
     ])->get();
 
-    $lastLogin = Login::where('userId', '=', auth()->user()->id)->orderBy('id', 'desc')->first();
+    $lastLogin = Login::where('userId', '=', auth()->user()->id)
+    ->orderBy('id', 'desc')->get();
 
-    $lastLogin = is_null($lastLogin) ? 'Nem volt' : $lastLogin->created_at;
+    $lastLogin = count($lastLogin) <= 1 ? 'Nem volt' : $lastLogin[1]->created_at;
 
 
     return view('client.dashboard', array(
@@ -43,7 +43,11 @@ class ClientController extends Controller {
   public function displayProducts() {
 
     $keys       = ProductController::getKeysWithLabel();
-    $categories = ProductCategory::orderBy('name', 'asc')->get();
+
+    $categories = ProductCategory::where('deleted', '=', 0)
+    ->orderBy('name', 'asc')
+    ->get();
+
     $products = Product::with('getCategory')
     ->where([
       ['deleted', '=', 0],
@@ -60,6 +64,30 @@ class ClientController extends Controller {
   }
 
   /**
+   * Megjelenít egy adott termékekt.
+   */
+  public function displayProduct ($id) {
+
+    // Létezik ilyen termék?
+    $product = Product::findOrFail($id);
+
+    $keys = ProductController::getKeysWithLabel();
+
+
+    // Az adotemberhet tartozik?
+    if ($product->creatorId != auth()->user()->id) {
+      abort(403);
+    }
+
+    return view('client.products.show', array(
+      'product' => $product,
+      'keys'    => $keys,
+    ));
+
+
+  }
+
+  /**
    * Megjeleníti egy adott terméke módosítási nézetét.
    */
   public function editProduct($id) {
@@ -73,13 +101,38 @@ class ClientController extends Controller {
     }
 
     $keys       = ProductController::getKeysWithLabel();
-    $categories = ProductCategory::orderBy('name', 'asc')->get();
+
+    $categories = ProductCategory::where('deleted', '=', 0)
+    ->orderBy('name', 'asc')->get();
 
     return view('client.products.edit', array(
       'product'     => $product,
       'keys'        => $keys,
       'categories'  => $categories,
     ));
+  }
+
+  /**
+   * Megjeleníti a képfeltöltési felületet a kliens számára.
+   */
+  public function displayImages() {
+
+    // Le kell kérdezni az összes, az adott userhez tartzó termméket.
+    $products = Product::where([
+      ['creatorId', '=', auth()->user()->id],
+      ['deleted', '=', 0]
+    ])->get();
+
+
+    return view('client.images.display', array('products' => $products));
+  }
+
+  /**
+   * Api hívja meg.
+   */
+  public function getAllProduct() {
+
+    dd(auth()->user());
   }
 }
 

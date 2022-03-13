@@ -13,6 +13,13 @@
     </a>
   </li>
 
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{route('client_images')}}">
+      <i class="bi bi-image p-1"></i>Képek kezelése
+    </a>
+  </li>
+
   @endsection
 
 @section('main_content')
@@ -23,3 +30,5 @@
   </div>
 
 @endsection
+
+

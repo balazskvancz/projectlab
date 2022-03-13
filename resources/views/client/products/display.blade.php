@@ -25,15 +25,19 @@
 
       <hr class="my-3" />
 
+      <div class="col-sm-12 p-3">
+        <label class="fw-bold">Rendezés</label>
+        <select class="form-select">
+          <option></option>
+        </select>
+      </div>
+
       <div class="table-responsive mt-2">
         <table class="table table-striped table-hover">
           <thead>
             <tr>
               <th class="text-center">Cikkszám</th>
-              <th class="text-center">Kategória</th>
               <th class="text-center">Megnevezés</th>
-              <th class="text-center">Leírás</th>
-              <th class="text-center">Ár</th>
               <th class="text-center">Műveletek</th>
             </tr>
           </thead>
@@ -42,20 +46,13 @@
             @foreach ($products as $product)
               <tr>
                 <td class="text-center align-middle">{{$product->sku}}</td>
-                <td class="text-center align-middle">{{$product->getCategory->name}}</td>
                 <td class="text-center align-middle">{{$product->name}}</td>
-                <td class="text-center align-middle">{{$product->description}}</td>
-                <td class="text-center align-middle">{{$product->price}}</td>
-                <td class="text-center">
-                  <a href="/client/products/{{$product->id}}/edit">
-                    <button class="btn btn-lg shadow-none"><i class="bi bi-pencil-square"></i></button>
-                  </a>
-
-                  <form action="/client/products/{{$product->id}}/delete" method="POST"
-                    onsubmit="confirm('Biztosan törölni szeretnéd?')">
-                    @csrf
-                    <button class="btn btn-lg shadow-none" type="submit"><i class="bi bi-trash-fill"></i></button>
-                  </form>
+                <td class="text-center ">
+                  <div class="d-inline-block">
+                    <a href="/client/products/{{$product->id}}/show">
+                      <button class="btn btn-primary shadow-none pe-4 ps-4"><i class="bi bi-arrow-bar-right font-light"></i></button>
+                    </a>
+                  </div>
                 </td>
               </tr>
 

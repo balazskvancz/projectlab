@@ -5,10 +5,14 @@ use \App\Http\Controllers\Admin\AdminController;
 use \App\Http\Controllers\Auth\AuthController;
 use \App\Http\Controllers\Category\CategoryController;
 use \App\Http\Controllers\Client\ClientController;
+use \App\Http\Controllers\Image\ImageController;
 use \App\Http\Controllers\PageController;
 use \App\Http\Controllers\Product\ProductController;
 
 use Illuminate\Support\Facades\Route;
+
+use \App\Http\Middleware\AdminMiddleware;
+use \App\Http\Middleware\ClientMiddleware;
 
 /**
  * Az alkalmazás során felhasznált route-ok.
@@ -34,7 +38,8 @@ Route::group(['middleware' => 'auth'], function() {
 
 /** ADMIN */
 function addAdminRoutes() {
-  Route::prefix('admin')->group(function () {
+  Route::middleware(['adminMW'])
+  ->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'displayDashboard'])->name('admin_dashboard');
 
     Route::prefix('users')->group(function () {
@@ -52,6 +57,9 @@ function addAdminRoutes() {
     Route::prefix('categories')->group(function () {
       Route::Get('/', [AdminController::class, 'displayCategories'])->name('admin_categories');
       Route::Post('/', [CategoryController::class, 'store']);
+
+
+      Route::Post('{id}/delete', [CategoryController::class, 'delete']);
     });
   });
 }
@@ -61,7 +69,8 @@ function addAdminRoutes() {
 
 /** KLIENS */
 function addClientRoutes() {
-  Route::prefix('client')->group(function () {
+  Route::middleware(['clientMW'])
+  ->prefix('client')->group(function () {
     Route::get('/dashboard', [ClientController::class, 'displayDashboard'])->name('client_dashboard');
 
 
@@ -69,11 +78,20 @@ function addClientRoutes() {
       Route::Get('/', [ClientController::class, 'displayProducts'])->name('client_products');
       Route::Post('/', [ProductController::class, 'store']);
 
+      Route::Get('/{id}/show', [ClientController::class, 'displayProduct']);
 
       Route::Post('{id}/delete', [ProductController::class, 'delete']);
 
       Route::Get('{id}/edit', [ClientController::class, 'editProduct']);
       Route::Post('{id}/edit', [ProductController::class, 'update']);
+    });
+
+    Route::prefix('images')->group(function () {
+      Route::Get('/', [ClientController::class, 'displayImages'])->name('client_images');
+
+      Route::Post('/', [ImageController::class, 'store']);
+
+
     });
 
   });

@@ -37,9 +37,16 @@
         <tbody>
           @foreach ($categories as $category)
               <tr>
-                <td class="text-center">{{$category->id}}</td>
-                <td class="text-center">{{$category->name}}</td>
-                <td class="text-center"></td>
+                <td class="text-center align-middle">{{$category->id}}</td>
+                <td class="text-center align-middle">{{$category->name}}</td>
+                <td class="text-center">
+                  <form action="/admin/categories/{{$category->id}}/delete" method="POST"
+                    onsubmit="return confirm('Biztosan törlöd?');"
+                    >
+                    @csrf
+                    <button class="btn btn-lg shadow-none" type="submit"><i class="bi bi-trash-fill"></i></button>
+                  </form>
+                </td>
               </tr>
           @endforeach
         </tbody>

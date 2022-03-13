@@ -9,15 +9,23 @@
       <div class="row">
           <div class="col-sm-12  text-center">
               <h2 class="p-2">Bejelentkezés</h2>
+              <hr class="my-3" />
 
-              <hr class="my-3 m-2" />
+              @if (Session::Get('success'))
+                <h3 class="p-2 text-success">{{Session::Get('success')}}</h3>
+              @endif
+
+              @if (Session::Get('fail'))
+                <h3 class="p-2 text-danger">{{Session::Get('fail')}}</h3>
+              @endif
+
           </div>
       </div>
 
       <div class="row">
           <div class="col-sm-12">
               <div class="form-group p-2">
-                  <input type="text" class="form-control shadow-none" placeholder="Felhasználónév" name="username"/>
+                  <input type="text" class="form-control shadow-none @if (Session::Get('fail')) border border-danger @endif" placeholder="Felhasználónév" name="username"/>
               </div>
           </div>
       </div>
@@ -26,7 +34,7 @@
       <div class="row mb-5">
           <div class="col-sm-12">
               <div class="form-group p-2">
-                  <input type="password" class="form-control shadow-none" placeholder="Jelszó" name="password"/>
+                  <input type="password" class="form-control shadow-none @if (Session::Get('fail')) border border-danger @endif" placeholder="Jelszó" name="password"/>
               </div>
           </div>
       </div>

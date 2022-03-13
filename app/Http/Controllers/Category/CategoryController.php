@@ -11,6 +11,8 @@ use \App\Http\Requests\PostCategoryRequest;
 
 class CategoryController extends Controller {
 
+  private $outcome = 'fail';
+  private $msg     = 'Sikertelen művelet.';
 
   /**
    * Felvesz egy új egyedet az adatbázisba.
@@ -21,11 +23,35 @@ class CategoryController extends Controller {
       'name'    => $request->name,
     ]);
 
-    // Ha sikerült, létrehozni.
     if ($newCategory) {
-      return redirect()->back()->with('success', 'Sikeres kategóriafelvétel.');
+      $this->outcome = 'success';
+      $this->msg     = 'Sikeres művelet.';
     }
 
-    return redirect()->back()->with('fail', 'Nem sikerült beszúrni a kategóriát.');
+    return redirect()->back()->with($this->outcome, $this->msg);
   }
+
+  /**
+   * Törlés. (Soft delete)
+   */
+  public function delete($id) {
+    $category = ProductCategory::where([
+      ['id', '=', $id],
+      ['deleted', '=', 1]
+    ])->first();
+
+    if (is_null($category)) {
+      abort(404);
+    }
+
+    $category->deleted = 1;
+
+    if ($category->save()) {
+      $this->outcome = 'success';
+      $this->msg     = 'Sikeres művelet.';
+    }
+
+    return redirect()->route('admin_categories')->with($this->outcome, $this->msg);
+  }
+
 }

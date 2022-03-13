@@ -14,6 +14,8 @@ use \App\Http\Requests\PostProductRequest;
  */
 class ProductController extends Controller {
 
+  private $outcome = 'fail';
+  private $msg     = 'Sikertelen művelet.';
   /**
    * Egy új egyed felvétele.
    */
@@ -37,11 +39,13 @@ class ProductController extends Controller {
       'creatorId'       => auth()->user()->id
     ]);
 
+
     if ($newProduct) {
-      return redirect()->back()->with('success', 'Sikeres művelet.');
+      $this->outcome = 'success';
+      $this->msg     = 'Sikeres művelet.';
     }
 
-    return redirect()->back()->with('fail', 'Sikertelen művelet.');
+    return redirect()->back()->with($this->outcome, $this->msg);
 
   }
 
@@ -68,10 +72,11 @@ class ProductController extends Controller {
     $product->deleted = 1;
 
     if ($product->save()) {
-      return redirect()->back()->with('success', 'Sikeres művelet.');
+      $this->outcome = 'success';
+      $this->msg     = 'Sikeres művelet.';
     }
 
-    return redirect()->back()->with('fail', 'Sikertelen művelet.');
+    return redirect()->back()->with($this->outcome, $this->msg);
   }
 
   /**
@@ -125,10 +130,11 @@ class ProductController extends Controller {
     $redirectRoute = auth()->user()->role == 1 ? 'client_products' : 'admin_products';
 
     if ($product->save()) {
-      return redirect()->route($redirectRoute)->with('success', 'Sikeres művelet.');
+      $this->outcome = 'success';
+      $this->msg     = 'Sikeres művelet.';
     }
 
-    return redirect()->route($redirectRoute)->with('fail', 'Sikertelen művelet.');
+    return redirect()->route($redirectRoute)->with($this->outcome, $this->msg);
   }
 
 
