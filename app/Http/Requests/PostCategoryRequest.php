@@ -20,10 +20,21 @@ class PostCategoryRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-          'name'=> 'required|unique:product_categories|max: 191'
+          'name'=> 'required|unique:product_categories|max:191'
         ];
     }
+
+    /**
+     * Visszaadja az egyes validációs feltételekhez tartozó hibaüzeneteket.
+     */
+    public function messages() {
+      return [
+        'required' => 'A mező kitöltése kötelező.',
+        'max'      => 'A mező maximális hossza 191 karakter lehet.',
+        'unique'   => 'Ezzel a névvel már létezik kategória.'
+      ];
+    }
+
 }

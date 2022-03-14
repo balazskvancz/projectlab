@@ -10,7 +10,12 @@
         <div class="row">
           <div class="col-sm-12 p-2 form-group">
             <label class="fw-bold m-2">Kategória megnevezése</label>
-            <input type="text" class="form-control shadow-none" name="name" autocomplete="off" />
+            <input type="text" class="form-control shadow-none @error('name') border border-danger @enderror" name="name" autocomplete="off"
+              value="{{old('name')}}"
+            />
+            @error('name')
+             <span class="text-danger">{{$message}}</span>
+            @enderror
           </div>
         </div>
       </div>

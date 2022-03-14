@@ -55,9 +55,9 @@ function addAdminRoutes() {
     });
 
     Route::prefix('categories')->group(function () {
+
       Route::Get('/', [AdminController::class, 'displayCategories'])->name('admin_categories');
       Route::Post('/', [CategoryController::class, 'store']);
-
 
       Route::Post('{id}/delete', [CategoryController::class, 'delete']);
     });

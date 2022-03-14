@@ -35,9 +35,10 @@ class CategoryController extends Controller {
    * Törlés. (Soft delete)
    */
   public function delete($id) {
+
     $category = ProductCategory::where([
       ['id', '=', $id],
-      ['deleted', '=', 1]
+      ['deleted', '=', 0]
     ])->first();
 
     if (is_null($category)) {

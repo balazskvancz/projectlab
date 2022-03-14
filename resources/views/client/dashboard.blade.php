@@ -33,7 +33,9 @@
       <hr class="my-3" />
 
       <div class="row mt-2">
-        <button class="btn btn-lg btn-outline-success shadow-none me-auto">Új termék felvétele <i class="bi bi-plus-circle"></i></button>
+        <form method='GET' action={{route('client_products')}} class="mx-auto text-center">
+          <button class="btn btn-lg btn-outline-success shadow-none me-auto">Új termék felvétele <i class="bi bi-plus-circle"></i></button>
+        </form>
       </div>
     </div>
   </div>

@@ -38,6 +38,9 @@
           <div class="file-select-button" id="fileName">Tallózás</div>
           <div class="file-select-name" id="noFile">Nincs fájl kiválasztva...</div>
           <input type="file" name="image" id="image" onchange="inputChanged(1);">
+          @error('image')
+            <span class="text-danger">{{$message}}</span>
+          @enderror
         </div>
       </div>
     </div>

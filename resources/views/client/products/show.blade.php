@@ -12,9 +12,12 @@
       <div class="row">
         <div class="col-sm-12 col-md-6 mx-auto d-inline-flex justify-content-center">
           <a href="/client/products/{{$product->id}}/edit"><button type="button" class="btn btn-primary shadow-none">Módosítás <i class="bi bi-pencil-square"></i></button></a>
-          <form>
+          <form method="POST" action="/client/products/{{$product->id}}/delete"
+            onsubmit="return confirm('Biztosan törölni szeretnéd?');"
+            >
+            @csrf
 
-          <button type="button" class="btn btn-danger shadow-none">Törlés <i class="bi bi-trash3-fill"></i></button>
+            <button type="submit" class="btn btn-danger shadow-none">Törlés <i class="bi bi-trash3-fill"></i></button>
           </form>
 
         </div>

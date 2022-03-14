@@ -22,10 +22,25 @@ class PostProductRequest extends FormRequest
      */
     public function rules() {
       return [
-        'name'          => 'required|max:191',
-        'sku'           => 'required|max:191',
+        'name'          => 'required|max:191|unique:products',
+        'sku'           => 'required|max:191|unique:products',
         'categoryId'    => 'required|numeric',
         'description'   => 'max:500',
+      ];
+    }
+
+    /**
+     * Visszaadja a validációs szabályokhoz tartozó hivaüzeneteket.
+     *
+     * @return array
+     */
+    public function messages() {
+
+      return [
+        'required'      => 'A mező kitöltése kötelező.',
+        'max'           => 'A mező hossza túl hosszú.',
+        'name.unique'   => 'Ilyen névvel már létezik termék.',
+        'sku.unique'    => 'Ilyen cikkszámmal már létezik termék.'
       ];
     }
 }

@@ -76,7 +76,10 @@ class ProductController extends Controller {
       $this->msg     = 'Sikeres művelet.';
     }
 
-    return redirect()->back()->with($this->outcome, $this->msg);
+    // Hova kell majd visszairányítani a user-t?
+    $route = auth()->user()->role == 2 ? 'admin_products' : 'client_products';
+
+    return redirect()->route($route)->with($this->outcome, $this->msg);
   }
 
   /**
@@ -155,4 +158,28 @@ class ProductController extends Controller {
 
     return $keysWithLabels;
   }
+
+  /**
+   * Visszaadja a rendezési opciókat.
+   *
+   * @return array
+   */
+  public static function getOrderOptions() {
+    $nameAsc   = 'name_asc';
+    $nameDesc  = 'name_desc';
+    $priceAsc  = 'price_asc';
+    $priceDesc = 'price_desc';
+
+
+    $sorting = array();
+    $sorting[$nameAsc]    = 'Név szerint növekvő';
+    $sorting[$nameDesc]   = 'Név szerint csökkenő';
+    $sorting[$priceAsc]   = 'Ár szerint növekvő';
+    $sorting[$priceDesc]  = 'Ár szerint csökkenő';
+
+    return $sorting;
+  }
+
+
 }
+

@@ -40,9 +40,13 @@ class ClientController extends Controller {
   /**
    * Megjeleníti az éppen bejelentkezett user-hez tartozó termékeket.
    */
-  public function displayProducts() {
+  public function displayProducts(Request $request) {
+    // Elkérjük a queryParamot.
+    $sort = $request->query('sort');
 
-    $keys       = ProductController::getKeysWithLabel();
+    $sorting = ProductController::getOrderOptions();
+
+    $keys  = ProductController::getKeysWithLabel();
 
     $categories = ProductCategory::where('deleted', '=', 0)
     ->orderBy('name', 'asc')
@@ -52,14 +56,30 @@ class ClientController extends Controller {
     ->where([
       ['deleted', '=', 0],
       ['creatorId', '=', auth()->user()->id]
-    ])
-    ->get();
+    ]);
+
+
+    // Rendezzük a kollekciót, sort alapján.
+    if ($sort == 'name_asc') {
+      $products = $products->orderBy('name', 'asc')->get();
+    } else if ($sort == 'name_desc'){
+      $products = $products->orderBy('name', 'desc')->get();
+    } else if ($sort == 'price_asc') {
+      $products = $products->orderBy('price', 'asc')->get();
+    } else if ($sort == 'price_desc') {
+      $products = $products->orderBy('price', 'desc')->get();
+    } else {
+      $products = $products->get();
+    }
+
 
     return view('client.products.display',
      array(
-        'categories' => $categories,
-        'products'   => $products,
-        'keys'       => $keys,
+        'categories'   => $categories,
+        'products'     => $products,
+        'keys'         => $keys,
+        'sorting'      => $sorting,
+        'currentSort'  => $sort,
       ));
   }
 
@@ -69,21 +89,25 @@ class ClientController extends Controller {
   public function displayProduct ($id) {
 
     // Létezik ilyen termék?
-    $product = Product::findOrFail($id);
+
+    $product = Product::where([
+      ['id', '=', $id],
+      ['deleted', '=', 0],
+      ['creatorId', '=', auth()->user()->id]
+    ])->first();
+
+    // Van ilyen termék?
+    if (is_null($product)) {
+      abort(404);
+    }
 
     $keys = ProductController::getKeysWithLabel();
 
-
-    // Az adotemberhet tartozik?
-    if ($product->creatorId != auth()->user()->id) {
-      abort(403);
-    }
 
     return view('client.products.show', array(
       'product' => $product,
       'keys'    => $keys,
     ));
-
 
   }
 
@@ -93,10 +117,14 @@ class ClientController extends Controller {
   public function editProduct($id) {
 
     // Létezik ilyen termék?
-    $product = Product::findOrFail($id);
+    $product = Product::where([
+      ['id', '=', $id],
+      ['deleted', '=', 0],
+      ['creatorId', '=', auth()->user()->id]
+    ])->first();
 
-    // Az éppen bejelentkezett user-hez tarozik?
-    if ($product->creatorId != auth()->user()->id) {
+    // Ha nincs ilyen termék, akkor dobjon hibát.
+    if (is_null($product)) {
       abort(404);
     }
 

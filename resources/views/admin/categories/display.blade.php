@@ -4,6 +4,10 @@
 
 <div class="card">
 
+  @if ($errors->count() > 0)
+    <input type="hidden" value="1" id="error" />
+  @endif
+
   <div class="card-header p-2">
     <h2 class="text-center p-2">Kategóriák kezelése</h2>
   </div>
@@ -60,3 +64,6 @@
 @include('admin.categories.new_category_modal')
 @endsection
 
+@section('scripts')
+  <script src="{{asset('js/admin/categories/main.js')}}"></script>
+@endsection

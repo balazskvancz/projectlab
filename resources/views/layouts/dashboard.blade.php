@@ -3,6 +3,7 @@
 
 @section('content')
 
+<!--
   <div class="row">
     <nav class="navbar bg-dark p-3">
       <div class="container-fluid">
@@ -12,6 +13,8 @@
       </div>
     </nav>
   </div>
+
+-->
 
 
   <div class="row">

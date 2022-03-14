@@ -27,4 +27,11 @@ class PostImageRequest extends FormRequest
         'image' => 'required|image'
       ];
     }
+
+    public function messages() {
+      return [
+        'required'  => 'A mező kitöltése kötelező.',
+        'image'     => 'A fájlnak kép típusúnak kell lennie.'
+      ];
+    }
 }

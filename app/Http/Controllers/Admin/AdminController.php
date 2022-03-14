@@ -53,7 +53,7 @@ class AdminController extends Controller {
    * Megjeleníti a kategóriák nézetet az admin számára.
    */
   public function displayCategories() {
-    $allCategories = ProductCategory::all();
+    $allCategories = ProductCategory::where('deleted', '=', 0)->get();
     return view('admin.categories.display', array('categories' => $allCategories));
   }
 

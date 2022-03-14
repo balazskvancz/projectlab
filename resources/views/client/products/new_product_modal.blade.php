@@ -20,10 +20,16 @@
                   @endforeach
                 </select>
               @elseif ($key == 'description')
-                <textarea class="form-control shadow-none" name="{{$key}}" rows=6 spellcheck="off" autocomplete="false"></textarea>
+                <textarea class="form-control shadow-none @error($key) border border-danger @enderror" name="{{$key}}" rows=6 spellcheck="off" autocomplete="false"></textarea>
               @else
-                <input type="text" class="form-control shadow-none" name="{{$key}}" />
+                <input type="text" class="form-control shadow-none @error($key) border border-danger @enderror" name="{{$key}}"
+                  value="{{old($key)}}" autocomplete="off"
+                />
               @endif
+
+              @error($key)
+                <span class="text-danger">{{$message}}</span>
+              @enderror
             </div>
           </div>
         @endforeach
@@ -36,3 +42,8 @@
     </form>
   </div>
 </div>
+
+
+@section('scripts')
+  <script src="{{asset('js/client/products/main.js')}}"></script>
+@endsection

@@ -53,7 +53,10 @@
                 @foreach ($product->getImages as $image)
                   <tr>
                     <td class="text-center">
-                      <button class="btn btn-primary shadow-none">Megtekintés</button>
+                      <button class="btn btn-primary shadow-none"
+                      type="button"
+                      onclick="onClickOpenImageModal('{{$image->path}}')"
+                      >Megtekintés</button>
                     </td>
 
                     <td class="text-center">
@@ -74,5 +77,15 @@
       </div>
     </div>
   </form>
+
+
+  @include('client.products.image_modal')
+
+@endsection
+
+
+@section('scripts')
+
+  <script src="{{asset('js/client/edit/main.js')}}"></script>
 
 @endsection
