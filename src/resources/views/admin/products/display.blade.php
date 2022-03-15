@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.dashboard')
 
-@section('admin_content')
+@section('main_content')
 
   <div class="card">
     <div class="card-header p-2">
@@ -20,21 +20,7 @@
 
       <hr class="my-3" />
 
-      <div class="col-sm-12 col-md-6 col-lg-3 col-lx-2 p-3">
-        <form method="GET" action=''>
-          <label class="fw-bold">Rendezés</label>
-          <select class="form-select shadow-none" name="sort">
-            @foreach ($sorting as $key => $value)
-              <option value="{{$key}}"
-              @if (!is_null($currentSort) && $currentSort == $key) selected @endif
-              >{{$value}}</option>
-            @endforeach
-          </select>
-
-          <button class="btn btn-primary shadow-none mt-4" type="submit">Rendezés</button>
-        </form>
-      </div>
-      <hr class="my-3" />
+      @include('common.sort')
 
       <div class="table-responsive mt-2">
         <table class="table table-striped table-hover">
@@ -44,7 +30,6 @@
               <th class="text-center">Cikkszám</th>
               <th class="text-center">Kategória</th>
               <th class="text-center">Megnevezés</th>
-              <th class="text-center">Leírás</th>
               <th class="text-center">Ár</th>
               <th class="text-center">Műveletek</th>
             </tr>
@@ -57,10 +42,11 @@
                 <td class="text-center align-middle">{{$product->sku}}</td>
                 <td class="text-center align-middle">{{$product->getCategory->name}}</td>
                 <td class="text-center align-middle">{{$product->name}}</td>
-                <td class="text-center align-middle">{{$product->description}}</td>
                 <td class="text-center align-middle">{{$product->price}}</td>
                 <td class="text-center">
-                  <button class="btn btn-lg shadow-none"><i class="bi bi-trash-fill"></i></button>
+                  <a href="/admin/products/{{$product->id}}/show">
+                      <button class="btn btn-primary shadow-none pe-4 ps-4"><i class="bi bi-arrow-bar-right font-light"></i></button>
+                    </a>
                 </td>
               </tr>
 

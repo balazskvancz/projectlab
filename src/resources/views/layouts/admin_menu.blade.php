@@ -1,6 +1,4 @@
-@extends('layouts.dashboard')
 
-@section('navbar_content')
   <li class="nav-item">
     <a class="nav-link" href="{{route('admin_dashboard')}}">
       <i class="bi bi-speedometer p-1"></i>Áttekintés
@@ -30,13 +28,3 @@
 
 
 
-  @endsection
-
-@section('main_content')
-  <div class="container-fluid">
-    <div class="container mx-auto p-4 m-4">
-      @yield('admin_content')
-    </div>
-  </div>
-
-@endsection

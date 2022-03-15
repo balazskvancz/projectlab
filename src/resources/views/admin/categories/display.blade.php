@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.dashboard')
 
-@section('admin_content')
+@section('main_content')
 
 <div class="card">
 

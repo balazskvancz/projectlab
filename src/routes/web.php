@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Middleware\AdminMiddleware;
 use \App\Http\Middleware\ClientMiddleware;
 
+
+use \App\Models\Product;
+use \App\Models\ProductCategory;
+
+
 /**
  * Az alkalmazás során felhasznált route-ok.
  */
@@ -23,6 +28,8 @@ Route::Get('/', [AuthController::class, 'displayLogin'])->name('login');
 
 // Létrehozza a kezdő felhasználókat.
 Route::Get('/createusers', [AuthController::class, 'createUsers']);
+
+
 
 
 /** AUTHENTIKÁCIÓ */
@@ -51,6 +58,7 @@ function addAdminRoutes() {
       Route::Get('/', [AdminController::class, 'displayProducts'])->name('admin_products');
 
 
+      Route::Get('{id}/show', [AdminController::class, 'displayProduct']);
       Route::Post('{id}/delete', [ProductController::class, 'delete']);
 
     });
@@ -98,3 +106,109 @@ function addClientRoutes() {
   });
 }
 
+/**
+ * Feltölti az adatbázist dummay adatokkal.
+ */
+Route::Get('/dummydata', function () {
+
+
+  if (count(Product::all()) > 0 || count(ProductCategory::all()) > 0) {
+    return;
+  }
+  // Kategóriák
+
+  $books = ProductCategory::create([
+    'name'    => 'Könyv'
+  ]);
+
+  $homeStuff = ProductCategory::create([
+    'name'    => 'Háztartási cikk'
+  ]);
+
+  $itCat     = ProductCategory::create([
+    'name'    => 'Számítástechnikai termék'
+  ]);
+
+  Product::create([
+    'name'       => 'Gyűrűk ura',
+    'categoryId' => $books->id,
+    'sku'        => '10001',
+    'price'      => '5000',
+    'creatorId'  => 2
+  ]);
+
+  Product::create([
+    'name'       => 'Végtelen tréfa',
+    'categoryId' => $books->id,
+    'sku'        => '10002',
+    'price'      => '7000',
+    'description' => 'Magávalragadó történet David Foster Wallace tollából.',
+    'creatorId'  => 2
+  ]);
+
+  Product::create([
+    'name'       => 'Harry Potter',
+    'categoryId' => $books->id,
+    'sku'        => '10003',
+    'price'      => '5000',
+    'creatorId'  => 2
+  ]);
+
+  Product::create([
+    'name'       => 'Porszívó piros színű',
+    'categoryId' => $homeStuff->id,
+    'sku'        => 'porszivo_piros',
+    'price'      => '25000',
+    'description' => 'Nagyteljesítményű otthoni porszvó, piros színben.',
+    'creatorId'  => 2
+  ]);
+
+
+  Product::create([
+    'name'       => 'Mikrohullámú sütő',
+    'categoryId' => $homeStuff->id,
+    'sku'        => 'mikrohullamu_suto',
+    'price'      => '35000',
+    'description' => '600W teljesítményű mikrohullámú sütő.',
+    'creatorId'  => 3,
+  ]);
+
+  Product::create([
+    'name'       => 'Vasaló',
+    'categoryId' => $homeStuff->id,
+    'sku'        => 'vasalo',
+    'price'      => '7000',
+    'description' => '',
+    'creatorId'  => 3,
+  ]);
+
+
+  Product::create([
+    'name'       => 'Monitor 24 col',
+    'categoryId' => $itCat->id,
+    'sku'        => 'monitor24',
+    'price'      => '35000',
+    'description' => '24 colos monitor, jó minőség',
+    'creatorId'  => 3,
+  ]);
+
+
+  Product::create([
+    'name'       => 'Laptop',
+    'categoryId' => $itCat->id,
+    'sku'        => 'laptop',
+    'price'      => '1000000',
+    'description' => 'Nagyon erős laptop, sötétszürke színben',
+    'creatorId'  => 3,
+  ]);
+
+
+  Product::create([
+    'name'       => 'Videókártya',
+    'categoryId' => $itCat->id,
+    'sku'        => 'videokartya',
+    'price'      => '24990',
+    'description' => 'BitCoin bányászatra alkalmas GPU',
+    'creatorId'  => 3,
+  ]);
+});

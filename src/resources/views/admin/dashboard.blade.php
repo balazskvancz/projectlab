@@ -1,6 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.dashboard')
 
-@section('admin_content')
+
+@section('main_content')
   <div class="card">
     <div class="card-header p-2">
       <h2 class="text-center">Áttekintés</h2>

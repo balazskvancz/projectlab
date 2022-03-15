@@ -61,6 +61,24 @@ class AdminController extends Controller {
   }
 
   /**
+   * Megjeleníti egy adott termék adatait az admin számára.
+   */
+  public function displayProduct($id) {
+
+    // Létezik ilyen termék?
+    $product = Product::findOrFail($id);
+
+
+    $keys = ProductController::getKeysWithLabel();
+
+    return view('admin.products.show', array(
+      'product'   => $product,
+      'keys'      => $keys
+    ));
+  }
+
+
+  /**
    * Megjeleníti a kategóriák nézetet az admin számára.
    */
   public function displayCategories() {

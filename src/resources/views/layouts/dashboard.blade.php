@@ -22,7 +22,11 @@
       <div class="position-fixed pt-3">
         <ul class="nav flex-column">
 
-         @yield('navbar_content')
+          @if (auth()->user()->role == 2)
+            @include('layouts.admin_menu')
+          @else
+            @include('layouts.client_menu')
+          @endif
 
           <hr class="my-3" />
           <li class="nav-item">
@@ -56,7 +60,11 @@
       </div>
       @endif
 
-      @yield('main_content')
+      <div class="container-fluid">
+        <div class="container mx-auto p-4 m-4">
+          @yield('main_content')
+        </div>
+      </div>
     </main>
   </div>
 

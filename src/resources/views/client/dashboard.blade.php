@@ -1,7 +1,7 @@
-@extends('layouts.client')
+@extends('layouts.dashboard')
 
 
-@section('client_content')
+@section('main_content')
 
   <div class="card">
     <div class="card-header p-2">
