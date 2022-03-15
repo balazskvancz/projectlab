@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  
+  php:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    container_name: projectlab_php
+    volumes:
+      - ./src:/var/www/src
+    working_dir: /var/www/src
+    ports:
+      - "9000:9000"
+
+  nginx:
+    image: nginx
+    container_name: projectlab_nginx
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/conf.d/server.conf
+      - ./src:/var/www/src
+    depends_on:
+      - php
+
+  database:
+    image: mysql
+    container_name: projectlab_mysql
+    ports:
+      - ":3306"
+    volumes:
+      - ./db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: plab
+      MYSQL_USER: projectlab
+      MYSQL_PASSWORD: projectlab
+      MYSQL_ROOT_PASSWORD: projectlab
+
+     
