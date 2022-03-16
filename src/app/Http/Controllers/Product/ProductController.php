@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use \App\Models\Product;
 
 use \App\Http\Requests\PostProductRequest;
+use \App\Http\Requests\StoreProductRequest;
 
 /**
  * Termék kezelés
@@ -25,7 +26,7 @@ class ProductController extends Controller {
   /**
    * Egy új egyed felvétele.
    */
-  public function store (PostProductRequest $request) {
+  public function store (StoreProductRequest $request) {
     // Van már ilyen nevű vagy sku-val rendelkező termék?
     $products = Product::where('name', '=', $request->name)
     ->where('sku', '=', $request->sku)

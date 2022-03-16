@@ -22,8 +22,8 @@ class PostProductRequest extends FormRequest
      */
     public function rules() {
       return [
-        'name'          => 'required|max:191|unique:products',
-        'sku'           => 'required|max:191|unique:products',
+        'name'          => 'required|max:191',
+        'sku'           => 'required|max:191',
         'categoryId'    => 'required|numeric',
         'description'   => 'max:500',
       ];

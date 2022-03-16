@@ -34,7 +34,7 @@ class ImageController extends Controller {
       $extension = $image->getClientOriginalExtension();
 
       // Adunk neki egy nevet.
-      $fileName = auth()->user()->id. '_' . time(). '.' . $extension;
+      $fileName = $product->id . '_' . time(). '.' . $extension;
 
 
       $image->move(public_path('/images/uploads'), $fileName);
