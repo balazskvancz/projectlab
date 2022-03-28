@@ -29,9 +29,6 @@ Route::Get('/', [AuthController::class, 'displayLogin'])->name('login');
 // Létrehozza a kezdő felhasználókat.
 Route::Get('/createusers', [AuthController::class, 'createUsers']);
 
-
-
-
 /** AUTHENTIKÁCIÓ */
 Route::Get('/login', [AuthController::class, 'displayLogin'])->name('login');
 Route::Post('/login', [AuthController::class, 'tryToLogin']);

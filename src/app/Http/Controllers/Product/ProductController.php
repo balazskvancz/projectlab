@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use \App\Http\Controllers\Log\LogController;
 use Illuminate\Http\Request;
 
 use \App\Models\Product;
+
 
 use \App\Http\Requests\PostProductRequest;
 use \App\Http\Requests\StoreProductRequest;
@@ -37,19 +39,25 @@ class ProductController extends Controller {
       return;
     }
 
+    $currentUserId = auth()->user()->id;
+
     $newProduct = Product::create([
       'name'            => $request->name,
       'categoryId'      => $request->categoryId,
       'sku'             => $request->sku,
       'price'           => $request->price,
       'description'     => $request->description,
-      'creatorId'       => auth()->user()->id
+      'creatorId'       => $currentUserId
     ]);
 
 
+    // Ha sikerült kreálni, akkor siker üzenez
+    // + log-ba mentjük.
     if ($newProduct) {
       $this->outcome = 'success';
       $this->msg     = 'Sikeres művelet.';
+
+      LogController::insertProduct($newProduct, $currentUserId);
     }
 
     return redirect()->back()->with($this->outcome, $this->msg);
@@ -74,13 +82,16 @@ class ProductController extends Controller {
       return ;
     }
 
-
     // Soft delete
     $product->deleted = 1;
 
+    // Sikeres mentés esetén, üznetek beállítása
+    // illetve a log megírása.
     if ($product->save()) {
       $this->outcome = 'success';
       $this->msg     = 'Sikeres művelet.';
+
+      LogController::deleteProduct($product->id, $currentUser->id);
     }
 
     // Hova kell majd visszairányítani a user-t?
@@ -97,9 +108,12 @@ class ProductController extends Controller {
     // Létezik ilyen termék?
     $product = Product::findOrFail($id);
 
+    $currentUser = auth()->user();
+
     // Ha nem megfelelő jogosultság. Értsd: valaki, nem a saját termékét szeretné módosítani
     // akkor dobjon hibát. TODO: elegánsabb megoldás!
-    if (auth()->user()->role == 1 && auth()->user()->id != $product->creatorId) {
+    if ($currentUser->role == 1 &&
+        $currentUser->id != $product->creatorId) {
       abort(404);
     }
 
@@ -133,15 +147,23 @@ class ProductController extends Controller {
 
     $keys = ProductController::getKeysWithLabel();
 
+    // A logolás miatt szükségünk van mi volt
+    // az előző ár.
+    $oldPrice = $product->price;
+
     foreach ($keys as $key => $value) {
       $product->$key = $request->$key;
     }
 
-    $redirectRoute = auth()->user()->role == 1 ? 'client_products' : 'admin_products';
+    $redirectRoute = $currentUser->role == 1 ? 'client_products' : 'admin_products';
 
+    // Sikeres mentés esetén, beállítjuk a üzenetet
+    // illvete logolunk.
     if ($product->save()) {
       $this->outcome = 'success';
       $this->msg     = 'Sikeres művelet.';
+
+      LogController::modifyPrice($product->id, $currentUser->id, $oldPrice, $product->price);
     }
 
     return redirect()->route($redirectRoute)->with($this->outcome, $this->msg);
