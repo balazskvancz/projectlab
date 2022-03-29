@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use \App\Http\Controllers\Product\ProductController;
 
+use \App\Models\Log;
 use \App\Models\Login;
 use \App\Models\Product;
 use \App\Models\ProductCategory;
@@ -84,6 +85,30 @@ class AdminController extends Controller {
   public function displayCategories() {
     $allCategories = ProductCategory::where('deleted', '=', 0)->get();
     return view('admin.categories.display', array('categories' => $allCategories));
+  }
+
+  /**
+   * Megjeleníti a logok néztetét.
+   */
+  public function displayLogs() {
+
+    // Az összes log
+    $logs = Log::
+      select(
+        "logs.created_at",
+        "logs.oldPrice",
+        "logs.newPrice",
+        "log_types.name AS logName",
+        "users.username",
+        "products.name AS productName")
+      ->join('users', 'users.id', '=', 'logs.userId')
+      ->join('log_types', 'log_types.id', '=', 'logs.commandType')
+      ->join('products', 'logs.productId', '=', 'products.id')
+      ->orderBy('logs.created_at', 'DESC')
+      ->get();
+
+
+    return view('admin.logs.display', array('logs' => $logs));
   }
 
 }

@@ -15,6 +15,7 @@ use \App\Http\Middleware\AdminMiddleware;
 use \App\Http\Middleware\ClientMiddleware;
 
 
+use \App\Models\LogType;
 use \App\Models\Product;
 use \App\Models\ProductCategory;
 
@@ -66,6 +67,10 @@ function addAdminRoutes() {
       Route::Post('/', [CategoryController::class, 'store']);
 
       Route::Post('{id}/delete', [CategoryController::class, 'delete']);
+    });
+
+    Route::prefix('logs')->group(function () {
+      Route::Get('/', [AdminController::class, 'displayLogs'])->name('admin_logs');
     });
   });
 }
@@ -208,4 +213,24 @@ Route::Get('/dummydata', function () {
     'description' => 'BitCoin bányászatra alkalmas GPU',
     'creatorId'  => 3,
   ]);
+});
+
+Route::Get('/populatelogtype', function () {
+
+  if (count(LogType::all()) > 0) {
+    return;
+  }
+
+  LogType::create([
+    'name'  => 'Beszúrás'
+  ]);
+
+  LogType::create([
+    'name' => 'Ármódosítás'
+  ]);
+
+  LogType::create([
+    'name' => 'Törlés'
+  ]);
+
 });

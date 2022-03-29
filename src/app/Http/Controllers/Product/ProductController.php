@@ -57,7 +57,7 @@ class ProductController extends Controller {
       $this->outcome = 'success';
       $this->msg     = 'Sikeres művelet.';
 
-      LogController::insertProduct($newProduct, $currentUserId);
+      LogController::insertProduct($newProduct->id, $currentUserId);
     }
 
     return redirect()->back()->with($this->outcome, $this->msg);

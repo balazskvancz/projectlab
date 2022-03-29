@@ -18,15 +18,9 @@ class LogController extends Controller {
   // 2 - Termék módosítása.
   // 3 - Termék törlése.
 
-  public static function getCommands() {
-    $array = arra();
-
-    $array["1"] = "Insert";
-    $array["2"] = "Update";
-    $array["3"] = "Delete";
-
-    return $array;
-  }
+  public static $insertVal = 1;
+  public static $modifyVal = 2;
+  public static $deleteVal = 3;
 
   /**
    * Új termék felvétele.
@@ -38,6 +32,7 @@ class LogController extends Controller {
     Log::create([
       'productId'     => $productId,
       'userId'        => $userId,
+      'commandType'   => self::$insertVal
     ]);
   }
 
@@ -53,6 +48,7 @@ class LogController extends Controller {
     Log::create([
       'productId'      => $productId,
       'userId'         => $userId,
+      'commandType'    => self::$modifyVal,
       'oldPrice'       => $oldPrice,
       'newPrice'       => $newPrice
     ]);
@@ -67,11 +63,9 @@ class LogController extends Controller {
   public static function deleteProduct($productId, $userId) {
     Log::create([
       'productId'      => $productId,
-      'userId'         => $userId
+      'userId'         => $userId,
+      'commandType'    => self::$deleteVal,
     ]);
   }
-
-
-
 
 }

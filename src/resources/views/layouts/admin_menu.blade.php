@@ -26,5 +26,11 @@
     </a>
   </li>
 
+  <li class="nav-item">
+    <a class="nav-link" href="{{route('admin_logs')}}">
+      <i class="bi bi-bar-chart-line p-1"></i>Logok
+    </a>
+  </li>
+
 
 
