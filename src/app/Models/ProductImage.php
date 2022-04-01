@@ -18,7 +18,8 @@ class ProductImage extends Model
    */
   protected $fillable = [
     'productId',
-    'path'
+    'path',
+    'deleted'
   ];
 
 
@@ -27,7 +28,7 @@ class ProductImage extends Model
    * @return {\App\Models\Product} A termék egyed.
    */
   public function getProduct() {
-    return $this->belongsTo(\App\Models\Prouct::class, 'productId', 'id');
+    return $this->belongsTo(\App\Models\Product::class, 'productId', 'id');
   }
 
 }

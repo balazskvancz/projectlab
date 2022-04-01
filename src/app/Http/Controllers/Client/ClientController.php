@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use \App\Http\Controllers\Product\ProductController;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 
 use \App\Models\Login;
 use \App\Models\Product;
@@ -122,10 +125,13 @@ class ClientController extends Controller {
     $categories = ProductCategory::where('deleted', '=', 0)
     ->orderBy('name', 'asc')->get();
 
+    $apikey = Hash::make(auth()->user()->apikey);
+
     return view('client.products.edit', array(
       'product'     => $product,
       'keys'        => $keys,
       'categories'  => $categories,
+      'apikey'      => $apikey,
     ));
   }
 

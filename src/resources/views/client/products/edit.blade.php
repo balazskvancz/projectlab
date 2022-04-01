@@ -1,5 +1,12 @@
 @extends('layouts.dashboard')
 
+@section('csrf')
+  <meta name="csrf-token" content="{{csrf_token() }}" />
+  <meta name="apikey" content="{{ $apikey }} " />
+  <meta name="userid" content="{{ auth()->user()->id }}" />
+  <meta name="productid" content="{{ $product->id }}" />
+@endsection
+
 @section('main_content')
 
   <form class="card" action="" method="POST">
@@ -50,20 +57,7 @@
               </thead>
 
               <tbody>
-                @foreach ($product->getImages as $image)
-                  <tr>
-                    <td class="text-center">
-                      <button class="btn btn-primary shadow-none"
-                      type="button"
-                      onclick="onClickOpenImageModal('{{$image->path}}')"
-                      >Megtekintés</button>
-                    </td>
 
-                    <td class="text-center">
-                      <button class="btn btn-danger shadow-none">Törlés</button>
-                    </td>
-                  </tr>
-                @endforeach
               </tbody>
             </table>
           </div>

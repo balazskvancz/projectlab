@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="{{asset('css/main-style.css')}}" />
     <link rel="stylesheet" href="{{asset('css/file-upload.css')}}" />
 
+    @yield('csrf')
+
 </head>
 <body>
   <div class="container-fluid">

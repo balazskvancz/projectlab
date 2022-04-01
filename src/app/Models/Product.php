@@ -40,7 +40,7 @@ class Product extends Model
      * @return <\App\Models\ProductImage[]> A képek tömbje.
      */
     public function getImages() {
-      return $this->hasMany(\App\Models\ProductImage::class, 'productId', 'id');
+      return $this->hasMany(\App\Models\ProductImage::class, 'productId', 'id')->where('deleted', '=', 0);
     }
 
     /**

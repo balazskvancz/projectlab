@@ -147,9 +147,15 @@ class ProductController extends Controller {
 
     $keys = ProductController::getKeysWithLabel();
 
-    // A logolás miatt szükségünk van mi volt
+    // A logolás miatt szükségünk van:
+
     // az előző ár.
     $oldPrice = $product->price;
+
+    // előző leírás
+    $oldDescription = $product->description;
+
+
 
     foreach ($keys as $key => $value) {
       $product->$key = $request->$key;
@@ -163,7 +169,15 @@ class ProductController extends Controller {
       $this->outcome = 'success';
       $this->msg     = 'Sikeres művelet.';
 
-      LogController::modifyPrice($product->id, $currentUser->id, $oldPrice, $product->price);
+      // Ha történt ármódosítás, akkor azt logoljuk.
+      if ($oldPrice != $product->price) {
+        LogController::modifyPrice($product->id, $currentUser->id, $oldPrice, $product->price);
+      }
+
+      // Ugyanezt megtesszük leírás esetében is.
+      if ($oldDescription != $product->description) {
+        LogController::modifyDescription($product->id, $currentUser->id, $oldDescription, $product->description);
+      }
     }
 
     return redirect()->route($redirectRoute)->with($this->outcome, $this->msg);

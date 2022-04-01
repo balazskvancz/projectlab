@@ -11,6 +11,9 @@ use \App\Http\Controllers\Product\ProductController;
 
 use Illuminate\Support\Facades\Route;
 
+/** RANDOM STRING GENERÁLÁS */
+use Illuminate\Support\Str;
+
 use \App\Http\Middleware\AdminMiddleware;
 use \App\Http\Middleware\ClientMiddleware;
 
@@ -18,6 +21,7 @@ use \App\Http\Middleware\ClientMiddleware;
 use \App\Models\LogType;
 use \App\Models\Product;
 use \App\Models\ProductCategory;
+use \App\Models\User;
 
 
 /**
@@ -232,5 +236,21 @@ Route::Get('/populatelogtype', function () {
   LogType::create([
     'name' => 'Törlés'
   ]);
+
+});
+
+Route::Get('/createapikeys', function() {
+
+  $users = User::all();
+
+  foreach ($users as $user) {
+    $randomString = Str::random(20);
+
+    $user->apikey = $randomString;
+
+    $user->save();
+  }
+
+  return redirect('/');
 
 });

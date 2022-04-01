@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Logolási model.
  */
-class Log extends Model{
+class Log extends Model {
   use HasFactory;
 
   /**
@@ -20,8 +20,9 @@ class Log extends Model{
     'commandType',      // Mi történt vele.
     'oldPrice',         // Régi ár (@nullable).
     'newPrice',         // Új ár (@nullable).
+    'oldDescription',   // Régi leíárs (@nullable)
+    'newDescription',   // Új leírás (@nullable)
   ];
-
 
   /**
    * Visszaadja, melyik user volt.
@@ -36,6 +37,4 @@ class Log extends Model{
   public function getProduct() {
     return $this->belongsTo(\App\Models\Product::class, 'productId', 'id');
   }
-
-
 }

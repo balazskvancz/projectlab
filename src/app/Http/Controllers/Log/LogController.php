@@ -17,10 +17,11 @@ class LogController extends Controller {
   // 1 - Új termék felvétele.
   // 2 - Termék módosítása.
   // 3 - Termék törlése.
+  public static $insertVal   = 1;
+  public static $modifyPrice = 2;
+  public static $deleteVal   = 3;
+  public static $modifyDesc  = 4;
 
-  public static $insertVal = 1;
-  public static $modifyVal = 2;
-  public static $deleteVal = 3;
 
   /**
    * Új termék felvétele.
@@ -65,6 +66,23 @@ class LogController extends Controller {
       'productId'      => $productId,
       'userId'         => $userId,
       'commandType'    => self::$deleteVal,
+    ]);
+  }
+
+  /**
+   * Egy adott termékről tárolja, hogy nódosították a leírását.
+   *
+   * @param number $productId: A termék id-ja.
+   * @param number $userId: A módosítást végrehajtó felhasználó id-ja.
+   * @param string $oldDescription: A régi leírás.
+   * @param string $newDescription: A új leírás.
+   */
+  public static function modifyDescription($productId, $userId, $oldDescription, $newDescription) {
+    Log::create([
+      'productId'        => $productId,
+      'userId'           => $userId,
+      'oldDescription'   => $oldDescription,
+      'newDescription'   => $newDescription
     ]);
   }
 
