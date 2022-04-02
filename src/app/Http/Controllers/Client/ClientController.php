@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use \App\Models\Login;
 use \App\Models\Product;
 use \App\Models\ProductCategory;
+use \App\Models\ProductImage;
 
 /**
  *
@@ -146,8 +147,21 @@ class ClientController extends Controller {
       ['deleted', '=', 0]
     ])->get();
 
+    $images = ProductImage::join('products', 'product_images.productId', '=', 'products.id')
+      ->where([
+        ['products.creatorId', '=', auth()->user()->id],
+        ['product_images.deleted', '=', 0]
+      ])
+      ->select('product_images.id', 'products.name', 'product_images.path', 'product_images.created_at')
+      ->get();
 
-    return view('client.images.display', array('products' => $products));
+
+    $apikey = Hash::make(auth()->user()->apikey);
+
+    return view('client.images.display', array(
+      'products' => $products,
+      'images'   => $images,
+      'apikey'   => $apikey));
   }
 
   /**

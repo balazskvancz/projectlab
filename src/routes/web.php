@@ -106,6 +106,7 @@ function addClientRoutes() {
 
       Route::Post('/', [ImageController::class, 'store']);
 
+      Route::Post('/{id}/delete', [ImageController::class, 'delete']);
 
     });
 

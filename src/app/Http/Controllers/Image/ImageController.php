@@ -81,6 +81,11 @@ class ImageController extends Controller {
       $this->msg     = 'Sikeres művelet.';
     }
 
+    // Abban az esetben, ha rendes form-ot sütöttünk el,
+    // akkor irányítsuk vissza oda a felhasználót.
+    if ($route->route == 0) {
+      return redirect()->route('client_images')->with($this->outcome, $this->msg);
+    }
 
     return $this->outcome . ": " . $this->msg;
   }

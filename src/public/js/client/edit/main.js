@@ -8,12 +8,22 @@ let csrf = ''
  * @param {string} path
  */
 function onClickOpenImageModal(path) {
-  const image = document.querySelector('#image');
+
+  const modal = document.querySelector('#imageModal')
+
+  if (!modal) {
+    return
+  }
+
+  const image = document.querySelector('#image')
+
+  if (!image) {
+    return
+  }
   image.src = `/images/uploads/${path}`
 
-  var myImageModal = new bootstrap.Modal(document.querySelector('#imageModal'), {})
+  new bootstrap.Modal(modal, {}).toggle()
 
-  myImageModal.toggle();
 }
 
 /**
