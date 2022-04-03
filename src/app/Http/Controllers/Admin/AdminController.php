@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use \App\Http\Controllers\Log\LogController;
 use \App\Http\Controllers\Product\ProductController;
 
 use \App\Models\Log;
@@ -98,15 +99,31 @@ class AdminController extends Controller {
         "logs.created_at",
         "logs.oldPrice",
         "logs.newPrice",
+        "logs.oldDescription",
+        "logs.newDescription",
         "log_types.name AS logName",
+        "log_types.id AS logType",
         "users.username",
         "products.name AS productName")
       ->join('users', 'users.id', '=', 'logs.userId')
       ->join('log_types', 'log_types.id', '=', 'logs.commandType')
       ->join('products', 'logs.productId', '=', 'products.id')
       ->orderBy('logs.created_at', 'DESC')
-      ->get();
+      ->paginate(10);
 
+      // Meghatározzuk, mi volt a differencia.
+      foreach ($logs as $log) {
+        $log->diff = '';
+
+        if ($log->logType == LogController::$modifyPrice) {
+          $log->diff = $log->oldPrice . " -> " . $log->newPrice;
+        }
+
+        if ($log->logType == LogController::$modifyDesc) {
+          // $diff = xdiff_string_diff($log->oldDescription, $log->newDescription, 1);
+        }
+
+      }
 
     return view('admin.logs.display', array('logs' => $logs));
   }

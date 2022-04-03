@@ -17,6 +17,7 @@ class Log extends Model {
   protected $fillable = [
     'productId',        // Termék azonosító.
     'userId',           // Ki volt a user, aki végrehajtotta.
+    'imageId',          // A feltöltött kép azonosítója.
     'commandType',      // Mi történt vele.
     'oldPrice',         // Régi ár (@nullable).
     'newPrice',         // Új ár (@nullable).
@@ -36,5 +37,12 @@ class Log extends Model {
    */
   public function getProduct() {
     return $this->belongsTo(\App\Models\Product::class, 'productId', 'id');
+  }
+
+  /**
+   * Visszaaadja a hozzá tartozó képet.
+   */
+  public function getImage() {
+    return $this->belongsTo(\App\Models\ProductImage::class, 'imageId', 'id');
   }
 }

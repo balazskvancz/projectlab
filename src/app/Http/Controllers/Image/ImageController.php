@@ -8,7 +8,7 @@ use \App\Models\ProductImage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-
+use \App\Http\Controllers\Log\LogController;
 
 use \App\Http\Requests\DeleteImageRequest;
 use \App\Http\Requests\GetImagesRequest;
@@ -47,9 +47,12 @@ class ImageController extends Controller {
         'path'       => $fileName
       ]);
 
+      // Ha sikerült menteni, akkor azt logoljuk.
       if ($newImage) {
         $this->outcome = 'success';
         $this->msg     = 'Sikeres művelet.';
+
+        LogController::uploadImage($product->id, auth()->user()->id, $newImage->id);
       }
     }
 
@@ -76,9 +79,14 @@ class ImageController extends Controller {
 
     $image->deleted = 1;
 
+
+    // Ha sikerül menteni, akkor beállítjuk, hogy sikeres volt
+    // illetve, logoljuk az eseményt.
     if ($image->save()) {
       $this->outcome = 'success';
       $this->msg     = 'Sikeres művelet.';
+
+      LogController::deleteImage($request->productId, $request->userId, $image->id);
     }
 
     // Abban az esetben, ha rendes form-ot sütöttünk el,

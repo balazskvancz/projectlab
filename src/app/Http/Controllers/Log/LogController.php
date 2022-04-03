@@ -21,6 +21,8 @@ class LogController extends Controller {
   public static $modifyPrice = 2;
   public static $deleteVal   = 3;
   public static $modifyDesc  = 4;
+  public static $uploadImage = 5;
+  public static $deleteImage = 6;
 
 
   /**
@@ -81,8 +83,41 @@ class LogController extends Controller {
     Log::create([
       'productId'        => $productId,
       'userId'           => $userId,
+      'commandType'      => self::$modifyDesc,
       'oldDescription'   => $oldDescription,
       'newDescription'   => $newDescription
+    ]);
+  }
+
+  /**
+   * Egy új kép feltöltését naplózza.
+   *
+   * @param number $productId: A termék azonosítója.
+   * @param number $userId: A feltöltő azonosítója.
+   * @param number $imageId: A kép azonosítója.
+   */
+  public static function uploadImage($productId, $userId, $imageId) {
+    Log::create([
+      'productId'        => $productId,
+      'userId'           => $userId,
+      'imageId'          => $imageId,
+      'commandType'      => self::$uploadImage,
+    ]);
+  }
+
+  /**
+   * Egy kép törlését naplózza.
+   *
+   * @param number $productId: A termék azonosítója.
+   * @param number $userId: A felhasználó azonosítója.
+   * @param number $imageId: A kép azonosítója.
+   */
+  public static function deleteImage($productId, $userId, $imageId) {
+    Log::create([
+      'productId'       => $productId,
+      'userId'          => $userId,
+      'imageId'         => $imageId,
+      'commandType'     => self::$deleteImage
     ]);
   }
 

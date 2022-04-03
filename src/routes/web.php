@@ -238,6 +238,32 @@ Route::Get('/populatelogtype', function () {
     'name' => 'Törlés'
   ]);
 
+  LogType::create([
+    'name' => 'Leírásmódosítás'
+  ]);
+
+  LogType::create([
+    'name' => 'Képfeltöltés'
+  ]);
+
+  LogType::create([
+    'name' => 'Képtörlés'
+  ]);
+
+});
+
+Route::Get('/fasz', function () {
+LogType::create([
+    'name' => 'Leírásmódosítás'
+  ]);
+
+  LogType::create([
+    'name' => 'Képfeltöltés'
+  ]);
+
+  LogType::create([
+    'name' => 'Képtörlés'
+  ]);
 });
 
 Route::Get('/createapikeys', function() {
