@@ -24,7 +24,6 @@ class LogController extends Controller {
   public static $uploadImage = 5;
   public static $deleteImage = 6;
 
-
   /**
    * Új termék felvétele.
    *

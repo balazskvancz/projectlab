@@ -91,8 +91,17 @@ class AdminController extends Controller {
   /**
    * Megjeleníti a logok néztetét.
    */
-  public function displayLogs() {
+  public function displayLogs(Request $request) {
 
+    $userQuery      = $request->query('userid');
+    $startDateQuery = $request->query('startdate');
+    $endDateQuery   = $request->query('enddate');
+
+
+    $allUsers = User::where('role', '=', 1)
+      ->orderBy('username')->get();
+
+    // dd($allUsers);
     // Az összes log
     $logs = Log::
       select(
@@ -108,24 +117,43 @@ class AdminController extends Controller {
       ->join('users', 'users.id', '=', 'logs.userId')
       ->join('log_types', 'log_types.id', '=', 'logs.commandType')
       ->join('products', 'logs.productId', '=', 'products.id')
-      ->orderBy('logs.created_at', 'DESC')
-      ->paginate(10);
+      ->orderBy('logs.created_at', 'DESC');
+
+    if (!is_null($userQuery)) {
+      $logs = $logs->where('users.id', '=', $userQuery);
+    }
+
+    if (!is_null($startDateQuery)) {
+      $logs = $logs->where('logs.created_at', '>=', $startDateQuery);
+    }
+
+    if (!is_null($endDateQuery)) {
+      $logs = $logs->where('logs.created_at', '<=', $endDateQuery);
+    }
+
+    $logs = $logs->paginate(10);
 
       // Meghatározzuk, mi volt a differencia.
-      foreach ($logs as $log) {
-        $log->diff = '';
+    foreach ($logs as $log) {
+      $log->diff = '';
 
-        if ($log->logType == LogController::$modifyPrice) {
-          $log->diff = $log->oldPrice . " -> " . $log->newPrice;
-        }
+      if ($log->logType == LogController::$modifyPrice) {
+        $log->diff = $log->oldPrice . " -> " . $log->newPrice;
+      }
 
-        if ($log->logType == LogController::$modifyDesc) {
+      if ($log->logType == LogController::$modifyDesc) {
           // $diff = xdiff_string_diff($log->oldDescription, $log->newDescription, 1);
-        }
+    }
 
       }
 
-    return view('admin.logs.display', array('logs' => $logs));
+    return view('admin.logs.display', array(
+      'logs'      => $logs,
+      'users'     => $allUsers,
+      'lastUser'  => $userQuery,
+      'lastStart' => $startDateQuery,
+      'lastEnd'   => $endDateQuery
+    ));
   }
 
 }
