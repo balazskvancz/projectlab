@@ -1,8 +1,23 @@
 import * as React from 'react'
 
+import { AdminNavbar } from './AdminNavbar'
+import { ClientNavbar } from './ClientNavbar'
+
 import './Navbar.css'
 
-export default class Navbar extends React.Component<{}> {
+import type { UserObject } from '../../definitions'
+import { getUser } from '../../common/authentication'
+interface IState {
+  user: UserObject
+}
+
+export default class Navbar extends React.Component<{}, IState> {
+  constructor() {
+    super({})
+
+    this.state = { user: getUser()!} 
+  }
+
   render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top p-3 shadow">
@@ -11,22 +26,12 @@ export default class Navbar extends React.Component<{}> {
                 
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav ms-auto">
-              <li className="nav-item active">
-                  <a className="nav-link" href="/">Főoldal <span className="sr-only">(current)</span></a>
-              </li>
-              <li className="nav-item ">
-                  <a className="nav-link" href="/users">Felhasználók</a>
-              </li>
-              <li className="nav-item ">
-                  <a className="nav-link" href="/products">Termékek</a>
-              </li>
-              <li className="nav-item ">
-                  <a className="nav-link" href="/logs">Napló</a>
-              </li>
-
-              <li className="nav-item ">
-                  <a className="nav-link" href="/logout">Kijelentkezés</a>
-              </li>
+              {
+                this.state.user.role === 2 ?
+                  <AdminNavbar />
+                :
+                  <ClientNavbar /> 
+              } 
             </ul>
           </div> 
         </div>

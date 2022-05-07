@@ -8,7 +8,7 @@ const host = 'http://localhost:8000'
  * @returns {Promise<any>} Response.
  */
 export async function post(path: string, data: any): Promise<any> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const targetUrl = host + path 
 
     axios.post(targetUrl, {
@@ -17,8 +17,9 @@ export async function post(path: string, data: any): Promise<any> {
     .then((res: any) => {
       resolve(res.data)
     })
+    // Ne foglalkozzunk az error-ral.
     .catch((err: any) => {
-      reject(err)
+      console.log(err) 
     })
   })
 }
@@ -29,7 +30,7 @@ export async function post(path: string, data: any): Promise<any> {
  * @return {Promise<any>} Response.
  */
 export async function get(path: string): Promise<any> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const targetUrl = host + path
 
     axios.get(targetUrl)
@@ -37,7 +38,7 @@ export async function get(path: string): Promise<any> {
       resolve(res.data)
     })
     .catch((err: any) => {
-      reject(err)
+      console.log(err) 
     })
   })
 }

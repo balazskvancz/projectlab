@@ -1,13 +1,13 @@
 import * as React from 'react'
 
-import type { IAdminDashboardData, ILogins } from '../../definitions'
+import type { IAdminDashboardData, ILogins, UserObject } from '../../definitions'
 
 import { EAdminRoute } from '../../definitions'
 
 import { get } from '../../common/request'
 
 interface IProps {
-  readonly apikey: string
+  readonly user: UserObject
 }
 
 interface IState {
@@ -91,7 +91,7 @@ export default class AdminDashboard extends React.Component<IProps, IState> {
    * Amikor bekerül az element a DOM-ba, elküldjük a requestet.
    */
   async componentDidMount() {
-    const path = `${EAdminRoute.Dashboard}?apikey=${ this.props.apikey }` 
+    const path = `${EAdminRoute.Dashboard}?apikey=${ this.props.user.apikey }` 
     const response = await get(path) as IAdminDashboardData
 
     this.setState({productsCount: response.productsCount})

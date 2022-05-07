@@ -28,4 +28,11 @@ Route::Post('/login', [AuthController::class, 'tryToLogin']);
 Route::middleware(['adminMW'])->prefix('admin')->group(function () {
   Route::Get('/dashboard', [AdminController::class, 'getDashboardData']);
   Route::Get('/users', [AdminController::class, 'getUsers']);
+  Route::Get('/products', [AdminController::class, 'getProducts']);
+  Route::Get('/logs', [AdminController::class, 'getLogs']);
+});
+
+Route::middleware(['clientMW'])->prefix('client')->group(function() {
+  Route::Get('dashboard', [ClientController::class, 'getDashboardData']);
+  Route::Get('/products', [ClientController::class, 'getProducts']);
 });

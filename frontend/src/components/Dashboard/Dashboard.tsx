@@ -4,7 +4,8 @@ import { getUser } from '../../common/authentication'
 
 import type { UserObject } from '../../definitions'
 
-import AdminDashboard from './AdminDashboard'
+import AdminDashboard  from './AdminDashboard'
+import ClientDashboard from './ClientDashboard'
 
 interface IState {
   user: UserObject
@@ -21,8 +22,6 @@ export default class Dashboard extends React.Component<{}, IState> {
       return
     }
 
-
-
     this.state = { user }
   }
 
@@ -30,7 +29,12 @@ export default class Dashboard extends React.Component<{}, IState> {
     return (
       <div className='container-fluid' id='dashboard'>
         <div className='container mx-auto mt-5'>
-          <AdminDashboard apikey={this.state.user.apikey} />
+          {
+            this.state.user.role === 2 ?
+              <AdminDashboard user={this.state.user} />
+            :
+              <ClientDashboard user={this.state.user} />
+          }
         </div>
       </div>
     )

@@ -22,14 +22,15 @@ class ClientController extends Controller {
   /**
    * Megjeleníti a dashboardot.
    */
-  public function displayDashboard() {
+  public function getDashboardData(Request $request) {
+    $userid = $request->query('userid');
 
     $ownProducts = Product::where([
-      ['creatorId', '=', auth()->user()->id],
+      ['creatorId', '=', $userid],
       ['deleted', '=', 0]
     ])->get();
 
-    $lastLogin = Login::where('userId', '=', auth()->user()->id)
+    $lastLogin = Login::where('userId', '=', $userid)
     ->orderBy('id', 'desc')->get();
 
     $lastLogin = count($lastLogin) <= 1 ? 'Nem volt' : $lastLogin[1]->created_at;
@@ -45,35 +46,43 @@ class ClientController extends Controller {
   /**
    * Megjeleníti az éppen bejelentkezett user-hez tartozó termékeket.
    */
-  public function displayProducts(Request $request) {
-    $fields = json_decode($request->data);
-
-    $user = User::find($field->userid);
-
-    if (is_null($user)) {
-      return "";
-    }
+  public function getProducts(Request $request) {
 
     // Elkérjük a queryParamot.
-    $sort = $request->query('sort');
+    $userid = $request->query('userid');
 
-    $sorting = ProductController::getOrderOptions();
+    // $sorting = ProductController::getOrderOptions();
+    // $keys  = ProductController::getKeysWithLabel();
 
-    $keys  = ProductController::getKeysWithLabel();
-
+    /*
     $categories = ProductCategory::where('deleted', '=', 0)
     ->orderBy('name', 'asc')
     ->get();
-
+*/
+/*
     $products = Product::with('getCategory')
     ->where([
       ['deleted', '=', 0],
       ['creatorId', '=', $user->id]
     ]);
+*/
+    $products = Product::
+      select(
+        "products.id",
+        "products.name",
+        "product_categories.name AS categoryName"
+      )
+      ->join('product_categories', 'product_categories.id', '=', 'products.categoryId')
+      ->where([
+        ['products.creatorId', '=', $userid],
+        ['products.deleted', '=', 0]
+      ])
+      ->orderBy('name', 'asc')
+      ->get();
 
+    // $products = ProductController::orderBy($sort, $products);
 
-    $products = ProductController::orderBy($sort, $products);
-
+    /*
     $data = array();
 
     $data['categories']   = $categories;
@@ -81,8 +90,8 @@ class ClientController extends Controller {
     $data['keys']         = $keys;
     $data['sorting']      = $sorting;
     $data['currentSort']  = $sort;
-
-    return json_encode($data);
+*/
+    return json_encode($products);
   }
 
   /**

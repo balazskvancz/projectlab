@@ -46,27 +46,60 @@ class AdminController extends Controller {
    */
   public function getUsers() {
     $allUsers = User::all();
+    $data = array();
 
-    return json_encode($allUsers);
+    foreach ($allUsers as $user) {
+      $object = array();
+
+      $object['id']       = $user->id;
+      $object['username'] = $user->username;
+
+      $role = 'Felhasználó';
+
+      if ($user->role == 2) {
+        $role = 'Admin';
+      }
+
+      $object['role'] = $role;
+
+      array_push($data, $object);
+    }
+
+    return json_encode($data);
   }
 
   /**
    * Megjeleníti a termékek nézetet az admin számára.
    */
-  public function displayProducts(Request $request) {
+  public function getProducts(Request $request) {
 
     $sort = $request->query('sort');
 
     $sorting = ProductController::getOrderOptions();
 
-    $products = Product::where('deleted', '=', 0);
+    $products = Product::
+      select(
+        "products.id",
+        "products.name",
+        "products.price",
+        "products.description",
+        "users.username",
+        "product_categories.name AS categoryName"
+      )
+      ->join('users', 'users.id', '=', "products.creatorId")
+      ->join('product_categories', 'product_categories.id', '=', 'products.categoryId')
+      ->where('products.deleted', '=', 0)
+      ->get();
 
-    $products = ProductController::orderBy($sort, $products);
+    // $products = ProductController::orderBy($sort, $products);
 
-    return view('admin.products.display', array(
-      'products'    => $products,
-      'sorting'     => $sorting,
-      'currentSort' => $sort));
+    $data = array();
+
+    $data['products']    = $products;
+    $data['sorting']     = $sorting;
+    $data['currentSort'] = $sort;
+
+    return $data;
   }
 
   /**
@@ -98,17 +131,11 @@ class AdminController extends Controller {
   /**
    * Megjeleníti a logok néztetét.
    */
-  public function displayLogs(Request $request) {
-
+  public function getLogs(Request $request) {
     $userQuery      = $request->query('userid');
     $startDateQuery = $request->query('startdate');
     $endDateQuery   = $request->query('enddate');
 
-
-    $allUsers = User::where('role', '=', 1)
-      ->orderBy('username')->get();
-
-    // dd($allUsers);
     // Az összes log
     $logs = Log::
       select(
@@ -124,21 +151,14 @@ class AdminController extends Controller {
       ->join('users', 'users.id', '=', 'logs.userId')
       ->join('log_types', 'log_types.id', '=', 'logs.commandType')
       ->join('products', 'logs.productId', '=', 'products.id')
-      ->orderBy('logs.created_at', 'DESC');
+      ->where('users.id', '=', $userQuery)
+      ->where('logs.created_at', '>=', $startDateQuery)
+      ->where('logs.created_at', '<=', $endDateQuery)
+      ->orderBy('logs.created_at', 'DESC')
+      ->get();
 
-    if (!is_null($userQuery)) {
-      $logs = $logs->where('users.id', '=', $userQuery);
-    }
 
-    if (!is_null($startDateQuery)) {
-      $logs = $logs->where('logs.created_at', '>=', $startDateQuery);
-    }
 
-    if (!is_null($endDateQuery)) {
-      $logs = $logs->where('logs.created_at', '<=', $endDateQuery);
-    }
-
-    $logs = $logs->paginate(10);
 
       // Meghatározzuk, mi volt a differencia.
     foreach ($logs as $log) {
@@ -154,14 +174,6 @@ class AdminController extends Controller {
 
     }
 
-    $data = array();
-
-    $data['logs']      = $logs;
-    $data['users']     = $allUsers;
-    $data['lastUser']  = $userQuery;
-    $data['lastStart'] = $startDateQuery;
-    $data['lastEnd']   = $endDateQuery;
-
-    return json_encode($data);
+    return json_encode($logs);
   }
 }

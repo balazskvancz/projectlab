@@ -5,6 +5,7 @@ import { getUser } from '../../common/authentication'
 import type { UserObject } from '../../definitions'
 
 import AdminProducts from './AdminProducts'
+import ClientProducts from './ClientProducts'
 
 interface IState {
   user: UserObject
@@ -27,9 +28,9 @@ export default class Products extends React.Component<{}, IState> {
         <div className='container mx-auto mt-5'>
         {
           this.state.user.role === 2 ? 
-            <AdminProducts user={this.state.user} />
+            <AdminProducts user={ this.state.user } />
           :
-            ''
+            <ClientProducts user={ this.state.user }  />
         }
         </div>
       </div>

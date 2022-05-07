@@ -1,21 +1,32 @@
 import * as React from 'react'
 
+import { EAdminRoute } from '../../definitions'
+import type { IUser  } from '../../definitions'
+
+import { get } from '../../common/request'
+
+
+
 interface IProps {
   readonly apikey: string
 }
 
 interface IState {
-
+  users: IUser[]
 }
 
 export default class User extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
 
-    
+    this.state = {users: []}
   }
 
-  render() {
+  /**
+   * 
+   * @returns {React.ReactNode} A lerenderelt elem.
+   */
+  render(): React.ReactNode {
     return(
       <div className='container mx-auto mt-5'>
         <div className="card">
@@ -25,12 +36,41 @@ export default class User extends React.Component<IProps, IState> {
 
           <div className="card-body">
             <div className="table-responsive">
-              </div> 
+              <table className='table table-striped table-hover'>
+                <thead>
+                  <tr>
+                    <th className="text-center w-50">Név</th>
+                    <th className="text-center w-50">Szint</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    this.state.users.map((user) => {
+                      return (
+                        <tr>
+                          <td className="text-center">{ user.username }</td>
+                          <td className="text-center">{ user.role }</td>
+                        </tr>
+                      )
+                    })
+                  }
+                </tbody>
+              </table>
+            </div> 
           </div>
         </div>
       </div>
     )
   }
 
+  /**
+   * Amikor már bekerült a DOM-ba az elem, akkor intézzük a requestet.
+   */
+  async componentDidMount(): Promise<void> {
+    const url = `${ EAdminRoute.Users }?apikey=${ this.props.apikey}`
 
+    const users = await get(url) as IUser[]
+
+    this.setState({ users }) 
+  } 
 }
