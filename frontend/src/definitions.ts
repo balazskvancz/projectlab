@@ -2,7 +2,12 @@ export enum EAdminRoute {
   Dashboard = '/api/admin/dashboard',
   Users = '/api/admin/users',
   Products = '/api/admin/products',
-  Logs = '/api/admin/logs'
+  Logs = '/api/admin/logs',
+
+}
+
+export enum ECommonRoute {
+  Categories = '/api/categories',
 }
 
 export enum EClientRoute {
@@ -61,6 +66,11 @@ export interface IProduct {
 
 export interface IAdminProductsResponse {
   readonly products: IProduct[]
+}
+
+export interface ICategory {
+  readonly id: number
+  readonly name: string
 }
 
 /** KLIENS. */

@@ -6,14 +6,16 @@ import { ClientNavbar } from './ClientNavbar'
 import './Navbar.css'
 
 import type { UserObject } from '../../definitions'
-import { getUser } from '../../common/authentication'
+import { getUser, logout } from '../../common/authentication'
+
+interface IProps {}
 interface IState {
   user: UserObject
 }
 
-export default class Navbar extends React.Component<{}, IState> {
-  constructor() {
-    super({})
+export default class Navbar extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props)
 
     this.state = { user: getUser()!} 
   }
@@ -32,10 +34,22 @@ export default class Navbar extends React.Component<{}, IState> {
                 :
                   <ClientNavbar /> 
               } 
+              <li className="nav-item ">
+                <a className="nav-link" onClick={ this.onClickLogout }>Kijelentkezés</a>
+              </li>
             </ul>
           </div> 
         </div>
       </nav>
     )
   }
+
+  /**
+   * Kijelentkezés gomb eseménykezélője.
+   */
+  private onClickLogout = () => {
+    logout()
+
+    window.location.href = '/'
+  } 
 }

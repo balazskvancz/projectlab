@@ -10,13 +10,13 @@ export const AdminNavbar = () => {
         <a className="nav-link" href="/users">Felhasználók</a>
       </li>
       <li className="nav-item ">
+        <a className="nav-link" href="/categories">Kategóriák</a>
+      </li>
+      <li className="nav-item ">
         <a className="nav-link" href="/products">Termékek</a>
       </li>
       <li className="nav-item ">
         <a className="nav-link" href="/logs">Napló</a>
-      </li>
-      <li className="nav-item ">
-        <a className="nav-link" href="/logout">Kijelentkezés</a>
       </li>
     </Fragment>
   )

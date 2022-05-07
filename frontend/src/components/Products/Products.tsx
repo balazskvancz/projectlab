@@ -7,14 +7,15 @@ import type { UserObject } from '../../definitions'
 import AdminProducts from './AdminProducts'
 import ClientProducts from './ClientProducts'
 
+interface IProps {}
 interface IState {
   user: UserObject
 }
 
-export default class Products extends React.Component<{}, IState> {
+export default class Products extends React.Component<IProps, IState> {
 
-  constructor() {
-    super({})
+  constructor(props: IProps) {
+    super(props)
 
     this.state = { user: getUser()! }
   }

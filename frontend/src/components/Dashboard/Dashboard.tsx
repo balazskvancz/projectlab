@@ -13,8 +13,8 @@ interface IState {
 
 export default class Dashboard extends React.Component<{}, IState> {
 
-  constructor() {
-    super({})
+  constructor(props: any) {
+    super(props)
 
     const user = getUser()
 

@@ -3,22 +3,25 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import { getUser } from '../../common/authentication'
 
-import Navbar    from '../Navbar/Navbar'
-import Dashboard from '../Dashboard/Dashboard'
-import Logs      from '../Logs/Logs'
-import Products  from '../Products/Products'
-import User      from '../User/User'
+import Category   from '../Category/Category'
+import Dashboard  from '../Dashboard/Dashboard'
+import Navbar     from '../Navbar/Navbar'
+import NewProduct from '../Products/NewProduct'
+import Logs       from '../Logs/Logs'
+import Products   from '../Products/Products'
+import User       from '../User/User'
 
 import type { UserObject } from '../../definitions'
 
+interface IProps {}
 interface IState {
   user: UserObject | null
 }
 
-export default class Page extends React.Component<{}, IState> {
+export default class Page extends React.Component<IProps, IState> {
 
-  constructor() {
-    super({})
+  constructor(props: IProps) {
+    super(props)
 
     this.state = { user: getUser() }
   }
@@ -36,8 +39,10 @@ export default class Page extends React.Component<{}, IState> {
             <Routes>
               <Route path='/' element={<Dashboard/>} />
               <Route path='/users' element={<User apikey={this.state.user!.apikey} />} />
+              <Route path='/categories' element={<Category user={this.state.user!}/>} />
               <Route path='/products' element={<Products />} />
               <Route path='/logs' element={<Logs user={this.state.user!} />} />
+              <Route path='/newproduct' element={< NewProduct user={this.state.user!} />} />
             </Routes>
           </BrowserRouter>
         </div>

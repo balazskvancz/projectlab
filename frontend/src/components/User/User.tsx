@@ -36,7 +36,7 @@ export default class User extends React.Component<IProps, IState> {
 
           <div className="card-body">
             <div className="table-responsive">
-              <table className='table table-striped table-hover'>
+              <table className='table table-striped table-hover table-bordered'>
                 <thead>
                   <tr>
                     <th className="text-center w-50">Név</th>

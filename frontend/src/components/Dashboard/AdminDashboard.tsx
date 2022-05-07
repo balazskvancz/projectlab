@@ -39,28 +39,31 @@ export default class AdminDashboard extends React.Component<IProps, IState> {
 
         <div className="card-body">
           <div className="row">
-            <div className="col-sm-12 col-md-4 mx-auto  card">
-              <div className="card-header">
-                <h3 className="p-2 text-center">Userek száma</h3>
-              </div>
-              <div className="card-body text-center">
-                <h5 className='fw-bold'>{this.state.usersCount } db</h5>
+            <div className="col-sm-12 col-md-4 mx-auto">
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="p-2 text-center">Userek száma</h3>
+                </div>
+                <div className="card-body text-center">
+                  <h5 className='fw-bold'>{this.state.usersCount } db</h5>
+                </div>
               </div>
             </div>
 
-            <div className="col-sm-12 col-md-4 mx-auto card ">
-              <div className="card-header">
-                <h3 className="p-2 text-center">Felvett termékek száma</h3>
+            <div className="col-sm-12 col-md-4 mx-auto">
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="p-2 text-center">Felvett termékek száma</h3>
+                </div>
+                <div className="card-body text-center">
+                  <h5 className='fw-bold'>{this.state.productsCount} db</h5>
+                </div>
               </div>
-              <div className="card-body text-center">
-                <h5 className='fw-bold'>{this.state.productsCount} db</h5>
-              </div>
-
             </div>
           </div>
 
           <div className="table-responsive mt-4">
-            <table className="table table-striped table-hover">
+            <table className="table table-bordered table-striped table-hover">
               <thead>
                 <tr>
                   <th className="text-center w-50">User</th>

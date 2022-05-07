@@ -15,14 +15,21 @@ class CategoryController extends Controller {
   private $msg     = 'Sikertelen művelet.';
 
   /**
+   * Visszaadja az összes kategóriát.
+   */
+  public function get() {
+    $categories = ProductCategory::where('deleted', '=', 0)->orderBy('name', 'asc')->get();
+
+    return json_encode($categories);
+  }
+
+  /**
    * Felvesz egy új egyedet az adatbázisba.
    */
   public function store(PostCategoryRequest $request) {
     $newCategory = ProductCategory::create([
       'name'    => $request->name,
     ]);
-
-
   }
 
   /**
@@ -36,8 +43,6 @@ class CategoryController extends Controller {
 
     $category->deleted = 1;
 
-    if ($category->save()) {
-
-    }
+    $category->save();
   }
 }

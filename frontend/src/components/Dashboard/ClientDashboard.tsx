@@ -52,7 +52,7 @@ export default class ClientDasboard extends React.Component<IProps, IState> {
                   <h3 className='text-center'>Utolsó bejelentkezés:</h3>
                 </div> 
                 <div className="card-body">
-                  <h3 className="fw-bold text-center">{this.state.lastLogin} db</h3>
+                  <h3 className="fw-bold text-center">{ this.state.lastLogin } </h3>
                 </div>
               </div>
             </div> 

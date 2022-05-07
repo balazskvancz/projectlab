@@ -13,9 +13,7 @@ export const ClientNavbar = () => {
       <li className="nav-item ">
         <a className="nav-link" href="/products">Termékek</a>
       </li>
-      <li className="nav-item ">
-        <a className="nav-link" href="/logout">Kijelentkezés</a>
-      </li>
+
     </Fragment>
   )
 }

@@ -24,6 +24,7 @@ Route::Get('/client/products/getall', [ClientController::class, 'getAllProducts'
 
 Route::Post('/login', [AuthController::class, 'tryToLogin']);
 
+Route::Get('/categories', [CategoryController::class, 'get']);
 
 Route::middleware(['adminMW'])->prefix('admin')->group(function () {
   Route::Get('/dashboard', [AdminController::class, 'getDashboardData']);

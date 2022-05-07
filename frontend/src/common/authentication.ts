@@ -32,3 +32,11 @@ export function getUser(): UserObject | null {
 
   return parsed
 }
+
+/**
+ * Törli a bejelentkeztetett user-t.
+ */
+export function logout(): void {
+  localStorage.removeItem("user")
+  localStorage.clear()
+}
