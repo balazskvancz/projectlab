@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use \App\Http\Controllers\Log\LogController;
 use Illuminate\Http\Request;
 
+use \App\Models\User;
 use \App\Models\Product;
 
 
@@ -29,9 +30,16 @@ class ProductController extends Controller {
    * Egy új egyed felvétele.
    */
   public function store (StoreProductRequest $request) {
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
+
+    $user = User::find($cookieUser->userId);
+
+    if (!$user) {
+      return;
+    }
+
     // Van már ilyen nevű vagy sku-val rendelkező termék?
     $products = Product::where('name', '=', $request->name)
-    ->where('sku', '=', $request->sku)
     ->get();
 
     // Már van ilyen, térjünk vissza.
@@ -39,15 +47,12 @@ class ProductController extends Controller {
       return;
     }
 
-    $currentUserId = auth()->user()->id;
-
     $newProduct = Product::create([
       'name'            => $request->name,
       'categoryId'      => $request->categoryId,
-      'sku'             => $request->sku,
       'price'           => $request->price,
       'description'     => $request->description,
-      'creatorId'       => $currentUserId
+      'creatorId'       => $user->id
     ]);
 
 
@@ -59,27 +64,27 @@ class ProductController extends Controller {
 
       LogController::insertProduct($newProduct->id, $currentUserId);
     }
-
-    return redirect()->back()->with($this->outcome, $this->msg);
-
   }
 
   /**
    * Töröl egy terméket. (Soft-delete)
    */
-  public function delete ($id) {
-
+  public function delete (Request $request, $id) {
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
     // Létezik ilyen termék?
     // Ha nincs ilyen, dobjon 404-t.
     $product = Product::findOrFail($id);
 
     // Admin vagy nem?
-    $currentUser = auth()->user();
+    $currentUser = User::where([
+      ['apikey', '=', $cookieUser->apikey],
+      ['id', '=', $cookieUser->userid],
+    ])->first();
 
     // Ha, a jelenelgi user nem admin & nem hozzá tartozik a jelen termék,
-    // dogjon error-t.
+    // ne csináljon semmit.
     if ($currentUser->role == 1 && $product->creatorId != $currentUser->id) {
-      return ;
+      return;
     }
 
     // Soft delete
@@ -93,22 +98,17 @@ class ProductController extends Controller {
 
       LogController::deleteProduct($product->id, $currentUser->id);
     }
-
-    // Hova kell majd visszairányítani a user-t?
-    $route = auth()->user()->role == 2 ? 'admin_products' : 'client_products';
-
-    return redirect()->route($route)->with($this->outcome, $this->msg);
   }
 
   /**
    * Updateel, egy adott terméket.
    */
   public function update ($id, PostProductRequest $request) {
-
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
     // Létezik ilyen termék?
     $product = Product::findOrFail($id);
 
-    $currentUser = auth()->user();
+    $currentUser = User::find($cookieUser->userid);
 
     // Ha nem megfelelő jogosultság. Értsd: valaki, nem a saját termékét szeretné módosítani
     // akkor dobjon hibát. TODO: elegánsabb megoldás!
@@ -119,7 +119,6 @@ class ProductController extends Controller {
 
     // Volt névváltoztatás?
     if ($product->name != $request->name) {
-
       $nameQuery = Product::where([
         ['name', '=', $request->name],
         ['deleted', '=', 0]
@@ -127,27 +126,11 @@ class ProductController extends Controller {
 
       // Error
       if (count($nameQuery) > 0) {
-
+        return "Ilyen névvel már létezik termék.";
       }
-    }
-
-    // Volt cikkszámváltoztatás?
-    if ($product->sku != $request->sku) {
-      $skuQuery = Product::where([
-        ['sku', '=', $request->sku],
-        ['deleted', '=', 0]
-      ])->get();
-
-      // Error
-      if (count($skuQuery) > 0) {
-
-      }
-
     }
 
     $keys = ProductController::getKeysWithLabel();
-
-    // A logolás miatt szükségünk van:
 
     // az előző ár.
     $oldPrice = $product->price;
@@ -161,14 +144,9 @@ class ProductController extends Controller {
       $product->$key = $request->$key;
     }
 
-    $redirectRoute = $currentUser->role == 1 ? 'client_products' : 'admin_products';
-
     // Sikeres mentés esetén, beállítjuk a üzenetet
     // illvete logolunk.
     if ($product->save()) {
-      $this->outcome = 'success';
-      $this->msg     = 'Sikeres művelet.';
-
       // Ha történt ármódosítás, akkor azt logoljuk.
       if ($oldPrice != $product->price) {
         LogController::modifyPrice($product->id, $currentUser->id, $oldPrice, $product->price);
@@ -179,11 +157,7 @@ class ProductController extends Controller {
         LogController::modifyDescription($product->id, $currentUser->id, $oldDescription, $product->description);
       }
     }
-
-    return redirect()->route($redirectRoute)->with($this->outcome, $this->msg);
   }
-
-
 
   /**
    * Visszaadja a Termék model attribútumait, és hozzá egy label-t.

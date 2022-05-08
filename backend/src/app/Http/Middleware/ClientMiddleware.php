@@ -17,20 +17,19 @@ class ClientMiddleware
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next) {
-      $userid = $request->query('userid');
-      $apikey = $request->query('apikey');
+      $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
 
-      if (is_null($userid) || is_null($apikey)) {
+      if (is_null($cookieUser->userid) || is_null($cookieUser->apikey)) {
         abort(403);
       }
 
-      $user = User::find($userid);
+      $user = User::find($cookieUser->userid);
 
       if (is_null($user)) {
         abort(403);
       }
 
-      if ($user->apikey != $apikey) {
+      if ($user->apikey != $cookieUser->apikey) {
         abort(403);
       }
 

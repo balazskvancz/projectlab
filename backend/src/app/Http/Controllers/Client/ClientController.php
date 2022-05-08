@@ -23,17 +23,17 @@ class ClientController extends Controller {
    * Megjeleníti a dashboardot.
    */
   public function getDashboardData(Request $request) {
-    $userid = $request->query('userid');
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
 
     $ownProducts = Product::where([
-      ['creatorId', '=', $userid],
+      ['creatorId', '=', $cookieUser->userid],
       ['deleted', '=', 0]
     ])->get();
 
-    $lastLogin = Login::where('userId', '=', $userid)
+    $lastLogin = Login::where('userId', '=', $cookieUser->userid)
     ->orderBy('id', 'desc')->get();
 
-    $lastLogin = count($lastLogin) <= 1 ? 'Nem volt' : $lastLogin[1]->created_at;
+    $lastLogin = count($lastLogin) <= 1 ? 'Nem volt' : (string) $lastLogin[1]->created_at;
 
     $data = array();
 
@@ -47,9 +47,7 @@ class ClientController extends Controller {
    * Megjeleníti az éppen bejelentkezett user-hez tartozó termékeket.
    */
   public function getProducts(Request $request) {
-
-    // Elkérjük a queryParamot.
-    $userid = $request->query('userid');
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
 
     // $sorting = ProductController::getOrderOptions();
     // $keys  = ProductController::getKeysWithLabel();
@@ -74,7 +72,7 @@ class ClientController extends Controller {
       )
       ->join('product_categories', 'product_categories.id', '=', 'products.categoryId')
       ->where([
-        ['products.creatorId', '=', $userid],
+        ['products.creatorId', '=', $cookieUser->userid],
         ['products.deleted', '=', 0]
       ])
       ->orderBy('name', 'asc')

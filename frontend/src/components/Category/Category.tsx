@@ -3,7 +3,7 @@ import * as React from 'react'
 import type { ICategory, UserObject } from '../../definitions'
 import { ECommonRoute } from '../../definitions'
 
-import { get } from '../../common/request'
+import { request} from '../../common/request'
 
 interface IProps {
   user: UserObject
@@ -76,7 +76,7 @@ export default class Category extends React.Component<IProps, IState>{
   async componentDidMount(): Promise<void> {
     const url = `${ ECommonRoute.Categories}?apikey=${ this.props.user.apikey }`
 
-    const categories = await get(url) as ICategory[]
+    const categories = await request(url) as ICategory[]
 
     this.setState({ categories })
   }

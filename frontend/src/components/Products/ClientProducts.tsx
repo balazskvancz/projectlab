@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-import type { IProduct, UserObject } from '../../definitions'
+import { ECommonRoute, IProduct, UserObject } from '../../definitions'
 
 import { EClientRoute } from '../../definitions'
 
-import { get } from '../../common/request'
+import { request } from '../../common/request'
 
 interface IProps {
   user: UserObject
@@ -54,7 +54,9 @@ export default class ClientProducts extends React.Component<IProps, IState> {
                           <button className='btn btn-primary'>Megnyitás</button>
                         </td>
                         <td className="text-center">
-                          <button className='btn btn-danger'>Törlés</button>
+                          <button className='btn btn-danger' onClick={() => {
+                            this.onClickDelete(product.id)
+                          }}>Törlés</button>
                         </td>
                       </tr> 
                     )
@@ -72,10 +74,20 @@ export default class ClientProducts extends React.Component<IProps, IState> {
    * Amikor a komponens a DOM-ba kerül, akkor lekérjük az adatokat.
    */
   async componentDidMount(): Promise<void> {
+    await this.fetchData()
+  }
+  
+  private fetchData = async (): Promise<void> => {
     const url = `${ EClientRoute.Products }?userid=${ this.props.user.userid }&apikey=${ this.props.user.apikey }`
-
-    const products = await get(url) as IProduct[]
+    const products = await request(url) as IProduct[]
 
     this.setState({ products })    
+  }
+
+  private onClickDelete = async (productId: number): Promise<void> => {
+    const url = `${ ECommonRoute.Products }/${ productId }/delete`
+
+    await request(url, 'POST')
+    await this.fetchData()
   }
 }

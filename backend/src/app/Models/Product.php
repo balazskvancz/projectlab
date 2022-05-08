@@ -20,7 +20,6 @@ class Product extends Model
     protected $fillable = [
       'name',               // Termék megnevezése. @unique
       'categoryId',         // Milyen kategóriába tartozik a termék.
-      'sku',                // Termék cikkszáma. @unique
       'price',              // Ár. @nullable
       'description',        // Leírás @nullable
       'creatorId',          // Ki hozta létre, (kiehz tartozik).

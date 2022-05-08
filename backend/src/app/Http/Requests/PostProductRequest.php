@@ -20,10 +20,9 @@ class PostProductRequest extends FormRequest
      *
      * @return array
      */
-    public function rules() {
+    public function rules(Request $request) {
       return [
         'name'          => 'required|max:191',
-        'sku'           => 'required|max:191',
         'categoryId'    => 'required|numeric',
         'description'   => 'max:500',
       ];
@@ -34,13 +33,12 @@ class PostProductRequest extends FormRequest
      *
      * @return array
      */
-    public function messages() {
+    public function messages(Request $request) {
 
       return [
         'required'      => 'A mező kitöltése kötelező.',
         'max'           => 'A mező hossza túl hosszú.',
         'name.unique'   => 'Ilyen névvel már létezik termék.',
-        'sku.unique'    => 'Ilyen cikkszámmal már létezik termék.'
       ];
     }
 }

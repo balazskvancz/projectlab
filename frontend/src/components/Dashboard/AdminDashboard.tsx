@@ -4,7 +4,7 @@ import type { IAdminDashboardData, ILogins, UserObject } from '../../definitions
 
 import { EAdminRoute } from '../../definitions'
 
-import { get } from '../../common/request'
+import { request } from '../../common/request'
 
 interface IProps {
   readonly user: UserObject
@@ -95,7 +95,7 @@ export default class AdminDashboard extends React.Component<IProps, IState> {
    */
   async componentDidMount() {
     const path = `${EAdminRoute.Dashboard}?apikey=${ this.props.user.apikey }` 
-    const response = await get(path) as IAdminDashboardData
+    const response = await request(path) as IAdminDashboardData
 
     this.setState({productsCount: response.productsCount})
     this.setState({usersCount: response.usersCount})

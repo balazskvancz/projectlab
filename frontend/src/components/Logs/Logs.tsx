@@ -4,7 +4,7 @@ import type { ILog, IUser, UserObject } from '../../definitions'
 
 import { EAdminRoute } from '../../definitions'
 
-import { get } from '../../common/request'
+import { request} from '../../common/request'
 
 interface IProps {
   user: UserObject
@@ -113,7 +113,7 @@ export default class Logs extends React.Component<IProps, IState> {
 
   async componentDidMount(): Promise<void> {
     const usersRoute = `${ EAdminRoute.Users }?apikey=${ this.props.user.apikey }` 
-    const users = await get(usersRoute) as IUser[]
+    const users = await request(usersRoute) as IUser[]
     this.setState({users})
   }
 
@@ -126,9 +126,9 @@ export default class Logs extends React.Component<IProps, IState> {
     const startingDate  = startingDateInput.value
     const endingDate    = endingDateInput.value
    
-    const url = `${ EAdminRoute.Logs }?apikey=${ this.props.user.apikey}&userid=${userSelect}&startdate=${startingDate}&enddate=${endingDate}` 
+    const url = `${ EAdminRoute.Logs }?userid=${userSelect}&startdate=${startingDate}&enddate=${endingDate}` 
 
-    const logs = await get(url) as ILog[]
+    const logs = await request(url) as ILog[]
 
     this.setState({ logs })
     this.setState({ query: true })

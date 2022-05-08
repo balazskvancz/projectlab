@@ -22,7 +22,6 @@ class StoreProductRequest extends PostProductRequest {
   public function rules() {
     return array_merge(parent::rules(), [
       'name' => 'required|unique:products',
-      'sku'  => 'required|unique:products'
     ]);
   }
 }

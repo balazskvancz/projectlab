@@ -17,14 +17,17 @@ class AdminMiddleware
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next) {
-      $apikey = $request->query('apikey');
+      $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
 
       // Ha nincs apikey, akkor egyből mehet.
-      if (is_null($apikey)) {
+      if (is_null($cookieUser->apikey)) {
         abort(403);
       }
 
-      $user = User::where('apikey', '=', $apikey)->first();
+      $user = User::where([
+        ['apikey', '=', $cookieUser->apikey],
+        ['id', '=', $cookieUser->userid]
+        ])->first();
 
 
       if (is_null($user)) {

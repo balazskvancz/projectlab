@@ -25,15 +25,24 @@ Route::Get('/client/products/getall', [ClientController::class, 'getAllProducts'
 Route::Post('/login', [AuthController::class, 'tryToLogin']);
 
 Route::Get('/categories', [CategoryController::class, 'get']);
+Route::Post('/products/{id}/delete', [ProductController::class, 'delete']);
 
 Route::middleware(['adminMW'])->prefix('admin')->group(function () {
   Route::Get('/dashboard', [AdminController::class, 'getDashboardData']);
+
   Route::Get('/users', [AdminController::class, 'getUsers']);
+
   Route::Get('/products', [AdminController::class, 'getProducts']);
+
   Route::Get('/logs', [AdminController::class, 'getLogs']);
+
+
+  Route::Post('/categories/{id}/delete', [CategoryController::class, 'delete']);
 });
 
 Route::middleware(['clientMW'])->prefix('client')->group(function() {
   Route::Get('dashboard', [ClientController::class, 'getDashboardData']);
   Route::Get('/products', [ClientController::class, 'getProducts']);
+
+  Route::Post('/products', [ProductController::class, 'store']);
 });

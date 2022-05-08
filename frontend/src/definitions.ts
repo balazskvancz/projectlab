@@ -8,6 +8,7 @@ export enum EAdminRoute {
 
 export enum ECommonRoute {
   Categories = '/api/categories',
+  Products = '/api/products'
 }
 
 export enum EClientRoute {

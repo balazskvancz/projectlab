@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { get } from '../../common/request'
+import { request} from '../../common/request'
 
 import type { IClientDashboardData, UserObject } from '../../definitions'
 
@@ -80,9 +80,9 @@ export default class ClientDasboard extends React.Component<IProps, IState> {
    * Amikor bekerül a DOM-ba az elem, lekérjük az adatokat.
    */
   async componentDidMount(): Promise<void> {
-    const url = `${ EClientRoute.Dashboard }?userid=${ this.props.user.userid}&apikey=${ this.props.user.apikey}`
+    const url = `${ EClientRoute.Dashboard }`
 
-    const data = await get(url) as IClientDashboardData
+    const data = await request(url) as IClientDashboardData
 
     this.setState({ productsCount: data.productsCount })
     this.setState({ lastLogin: data.lastLogin})

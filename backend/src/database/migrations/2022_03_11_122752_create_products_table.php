@@ -17,7 +17,6 @@ return new class extends Migration
         $table->id();
         $table->string('name', 191)->unique();
         $table->integer('categoryId');
-        $table->string('sku', 191)->unique();
         $table->integer('price')->nullable();
         $table->string('description', 500)->nullable();
         $table->integer('creatorId');

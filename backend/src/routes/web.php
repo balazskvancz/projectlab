@@ -2,7 +2,6 @@
 
 
 use \App\Http\Controllers\Admin\AdminController;
-use \App\Http\Controllers\Auth\AuthController;
 use \App\Http\Controllers\Category\CategoryController;
 use \App\Http\Controllers\Client\ClientController;
 use \App\Http\Controllers\Image\ImageController;
@@ -34,11 +33,6 @@ Route::Get('/', [AuthController::class, 'displayLogin'])->name('login');
 // Létrehozza a kezdő felhasználókat.
 Route::Get('/createusers', [AuthController::class, 'createUsers']);
 
-/** AUTHENTIKÁCIÓ */
-Route::Get('/login', [AuthController::class, 'displayLogin'])->name('login');
-Route::Post('/login', [AuthController::class, 'tryToLogin']);
-Route::Post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 /** Ezek, mind belpéshez kötött route-ok. */
 Route::group(['middleware' => 'auth'], function() {
   addAdminRoutes();
@@ -65,13 +59,6 @@ function addAdminRoutes() {
 
     });
 
-    Route::prefix('categories')->group(function () {
-
-      Route::Get('/', [AdminController::class, 'displayCategories'])->name('admin_categories');
-      Route::Post('/', [CategoryController::class, 'store']);
-
-      Route::Post('{id}/delete', [CategoryController::class, 'delete']);
-    });
 
     Route::prefix('logs')->group(function () {
       Route::Get('/', [AdminController::class, 'displayLogs'])->name('admin_logs');

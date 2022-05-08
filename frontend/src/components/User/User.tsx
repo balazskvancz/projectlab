@@ -3,7 +3,7 @@ import * as React from 'react'
 import { EAdminRoute } from '../../definitions'
 import type { IUser  } from '../../definitions'
 
-import { get } from '../../common/request'
+import { request } from '../../common/request'
 
 
 
@@ -69,7 +69,7 @@ export default class User extends React.Component<IProps, IState> {
   async componentDidMount(): Promise<void> {
     const url = `${ EAdminRoute.Users }?apikey=${ this.props.apikey}`
 
-    const users = await get(url) as IUser[]
+    const users = await request(url) as IUser[]
 
     this.setState({ users }) 
   } 

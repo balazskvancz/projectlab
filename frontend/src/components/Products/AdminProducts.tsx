@@ -4,7 +4,7 @@ import type { IAdminProductsResponse, IProduct, UserObject } from '../../definit
 
 import { EAdminRoute } from '../../definitions'
 
-import { get } from '../../common/request'
+import { request } from '../../common/request'
 
 interface IProps {
   user: UserObject
@@ -71,7 +71,7 @@ export default class AdminProducts extends React.Component<IProps, IState> {
   async componentDidMount(): Promise<void> {
     const url = `${ EAdminRoute.Products }?apikey=${ this.props.user.apikey}`
 
-    const response = await get(url) as IAdminProductsResponse
+    const response = await request(url) as IAdminProductsResponse
 
     this.setState({ products: response.products})
   }

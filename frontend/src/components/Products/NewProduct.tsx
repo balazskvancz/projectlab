@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import type { ICategory, UserObject } from '../../definitions'
 
-import { get } from '../../common/request'
+import { request } from '../../common/request'
 
 import { EClientRoute, ECommonRoute} from '../../definitions'
 
@@ -36,12 +36,13 @@ export default class NewProduct extends React.Component<IProps, IState> {
           <div className="card-body">
             <div className="col-sm-12 col-md-6 col-lg-4 mx-auto form-group mt-4">
               <label className='fw-bold'>Termék megnevezése</label>
-              <input type='text' className='form-control' name='product_name' />
+              <input type='text' className='form-control' name='name' />
+              <span className='text-danger' id='err_name' />
             </div> 
 
             <div className="col-sm-12 col-md-6 col-lg-4 mx-auto form-group mt-4">
               <label className='fw-bold'>Kategória</label>
-              <select className='form-select' name='product_category'>
+              <select className='form-select' name='categoryId'>
                 {
                   this.state.categories.map((category) => {
                     return (
@@ -50,6 +51,7 @@ export default class NewProduct extends React.Component<IProps, IState> {
                   })
                 }
               </select>
+              <span className='text-danger' id='err_categoryId' />
             </div> 
 
             <div className="col-sm-12 col-md-6 col-lg-4 mx-auto form-group mt-4">
@@ -59,14 +61,14 @@ export default class NewProduct extends React.Component<IProps, IState> {
 
             <div className="col-sm-12 col-md-6 col-lg-4 mx-auto form-group mt-4">
               <label className='fw-bold'>Leírás</label>
-              <textarea className='form-control' rows={ 6 } name='product_description'></textarea>
+              <textarea className='form-control' rows={ 6 } name='description'></textarea>
             </div> 
             
           </div>
 
           <div className="card-footer">
             <div className="col-sm-12 text-center p-3">
-              <button className='btn btn-primary btn-lg'>Mentés</button>
+              <button className='btn btn-primary btn-lg' onClick={this.onClickSave}>Mentés</button>
             </div>
           </div>
         </div>
@@ -80,8 +82,60 @@ export default class NewProduct extends React.Component<IProps, IState> {
   async componentDidMount(): Promise<void> {
     const url = ECommonRoute.Categories 
 
-    const categories = await get(url)  as ICategory[]
+    const categories = await request(url)  as ICategory[]
 
     this.setState({ categories })
+  }
+
+  /**
+   * Mentés gomb eseménykezelője.
+   */
+  private onClickSave = async (): Promise<void> => {
+    const nameInput           = document.querySelector('[name="name"]') as HTMLInputElement
+    const categoryInput       = document.querySelector('[name="categoryId"]') as HTMLSelectElement 
+    const priceInput          = document.querySelector('[name="product_price]') as HTMLInputElement
+    const descriptionInput    = document.querySelector('[name="description"]') as HTMLTextAreaElement
+
+    const name        = nameInput.value
+    const categoryId  = parseInt(categoryInput.value)
+    // const price       = priceInput.value
+    const description = descriptionInput.value
+
+    const data = { name, categoryId, /*price,*/ description }
+
+    console.log(data)
+
+    const response = await request(EClientRoute.Products, 'POST', JSON.stringify(data))
+
+    if (typeof response.errors === 'undefined') {
+      return
+    }
+
+    const badFields = Object.keys(response.errors)
+
+    badFields.forEach((field) => {
+      const query = `[name="${ field }"]`
+
+      const el = document.querySelector(query) as HTMLElement
+
+      if (!el) {
+        return  
+      }
+
+      el.classList.add('border', 'border-danger')
+
+     
+      const span = document.querySelector(`#err_${ field }`) as HTMLSpanElement
+
+      if (!span) {
+        return
+      }
+
+      span.innerHTML = response.errors[field]
+      
+    })
+    
+
+    console.log(badFields)
   }
 }

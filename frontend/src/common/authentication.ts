@@ -11,8 +11,9 @@ export function handleLogin(values: UserObject): boolean {
   }
 
   const stringified = JSON.stringify(values)
+  const coded = btoa(stringified)
 
-  localStorage.setItem("user", stringified)
+  document.cookie = `loggedUser= ${ coded };path=/`
   
   return true
 }
@@ -22,21 +23,38 @@ export function handleLogin(values: UserObject): boolean {
  * @returns {UserObject | null} A bejelentkezett user adatai, ha nincs ilyen akkor null.
  */
 export function getUser(): UserObject | null {
-  const storedUser = localStorage.getItem("user")
+  const cookie = getCookie("loggedUser")
 
-  if (!storedUser) {
+  if (!cookie) {
     return null
   }
-
-  const parsed: UserObject = JSON.parse(storedUser)
-
-  return parsed
+  
+  const user:UserObject = JSON.parse(atob(cookie))
+  
+  return user
 }
+
+
 
 /**
  * Törli a bejelentkeztetett user-t.
  */
 export function logout(): void {
-  localStorage.removeItem("user")
-  localStorage.clear()
+  document.cookie = 'loggedUser=; Max-Age=0'
+}
+
+function getCookie(cname: string):string {
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";  
 }
