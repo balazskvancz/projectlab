@@ -51,7 +51,9 @@ export default class ClientProducts extends React.Component<IProps, IState> {
                         <td className="text-center">{ product.categoryName } </td>
                         <td className="text-center">{ product.name }</td>
                         <td className="text-center">
-                          <button className='btn btn-primary'>Megnyitás</button>
+                          <a href={`/product?id=${ product.id }`}>
+                            <button className='btn btn-primary'>Megnyitás</button>
+                            </a>
                         </td>
                         <td className="text-center">
                           <button className='btn btn-danger' onClick={() => {

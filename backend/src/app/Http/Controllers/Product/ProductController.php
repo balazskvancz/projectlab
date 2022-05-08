@@ -32,7 +32,7 @@ class ProductController extends Controller {
   public function store (StoreProductRequest $request) {
     $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
 
-    $user = User::find($cookieUser->userId);
+    $user = User::find($cookieUser->userid);
 
     if (!$user) {
       return;
@@ -62,7 +62,7 @@ class ProductController extends Controller {
       $this->outcome = 'success';
       $this->msg     = 'Sikeres művelet.';
 
-      LogController::insertProduct($newProduct->id, $currentUserId);
+      LogController::insertProduct($newProduct->id, $user->id);
     }
   }
 

@@ -36,7 +36,5 @@ export default class Products extends React.Component<IProps, IState> {
         </div>
       </div>
     )
-
   }
-
 }

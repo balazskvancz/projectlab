@@ -101,11 +101,15 @@ export default class NewProduct extends React.Component<IProps, IState> {
     // const price       = priceInput.value
     const description = descriptionInput.value
 
-    const data = { name, categoryId, /*price,*/ description }
+   
+    const data = { name, categoryId }
 
-    console.log(data)
+    const response = await request(EClientRoute.Products, 'POST', data )
 
-    const response = await request(EClientRoute.Products, 'POST', JSON.stringify(data))
+    // Ekkora tudjuk, hogy minden jól ment.
+    if (response === '') {
+      window.location.href = '/products'
+    }
 
     if (typeof response.errors === 'undefined') {
       return
@@ -117,25 +121,18 @@ export default class NewProduct extends React.Component<IProps, IState> {
       const query = `[name="${ field }"]`
 
       const el = document.querySelector(query) as HTMLElement
-
       if (!el) {
         return  
       }
 
       el.classList.add('border', 'border-danger')
 
-     
       const span = document.querySelector(`#err_${ field }`) as HTMLSpanElement
-
       if (!span) {
         return
       }
 
       span.innerHTML = response.errors[field]
-      
     })
-    
-
-    console.log(badFields)
   }
 }

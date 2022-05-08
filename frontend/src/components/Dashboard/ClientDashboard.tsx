@@ -88,4 +88,3 @@ export default class ClientDasboard extends React.Component<IProps, IState> {
     this.setState({ lastLogin: data.lastLogin})
   }
 }
-

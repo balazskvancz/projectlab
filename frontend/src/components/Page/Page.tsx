@@ -13,6 +13,7 @@ import Products       from '../Products/Products'
 import User           from '../User/User'
 
 import type { UserObject } from '../../definitions'
+import ProductId from '../Products/ProductId'
 
 interface IProps {}
 interface IState {
@@ -41,7 +42,7 @@ export default class Page extends React.Component<IProps, IState> {
               <Route path='/' element={<Dashboard/>} />
               <Route path='/users' element={<User apikey={this.state.user!.apikey} />} />
               <Route path='/categories' element={<Category user={this.state.user!}/>} />
-              <Route path='/product' element={<DisplayProduct />} />
+              <Route path='/product' element={<ProductId />} />
               <Route path='/products' element={<Products />} />
               <Route path='/logs' element={<Logs user={this.state.user!} />} />
               <Route path='/newproduct' element={< NewProduct user={this.state.user!} />} />

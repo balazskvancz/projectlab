@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Image;
 
 use \App\Models\Product;
 use \App\Models\ProductImage;
+use \App\Models\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -26,37 +27,36 @@ class ImageController extends Controller {
    * Felölt egy képet, egy adott termékhez.
    */
   public function store(PostImageRequest $request) {
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
     // Létezik ilyen termék?
     $product = Product::findOrFail($request->product);
 
-    if($request->file('image')){
-
-      $image = $request->file('image');
-
-      // Meghatározzuk, mi a kiterjesztése.
-      $extension = $image->getClientOriginalExtension();
-
-      // Adunk neki egy nevet.
-      $fileName = $product->id . '_' . time(). '.' . $extension;
-
-
-      $image->move(public_path('/images/uploads'), $fileName);
-
-      $newImage = ProductImage::create([
-        'productId'  => $product->id,
-        'path'       => $fileName
-      ]);
-
-      // Ha sikerült menteni, akkor azt logoljuk.
-      if ($newImage) {
-        $this->outcome = 'success';
-        $this->msg     = 'Sikeres művelet.';
-
-        LogController::uploadImage($product->id, auth()->user()->id, $newImage->id);
-      }
+    if(!$request->file('image')) {
+      return "Nem tartalmaz fájlt.";
     }
 
-    return redirect()->back()->with($this->outcome, $this->msg);
+    $image = $request->file('image');
+
+    // Meghatározzuk, mi a kiterjesztése.
+    $extension = $image->getClientOriginalExtension();
+
+    // Adunk neki egy nevet.
+    $fileName = $product->id . '_' . time(). '.' . $extension;
+
+    $image->move(public_path('/images/uploads'), $fileName);
+
+    $newImage = ProductImage::create([
+      'productId'  => $product->id,
+      'path'       => $fileName
+    ]);
+
+    // Ha sikerült menteni, akkor azt logoljuk.
+    if ($newImage) {
+      LogController::uploadImage($product->id, $cookieUser->userid, $newImage->id);
+      return "";
+    }
+
+    return "Sikertelen művelet.";
   }
 
   /**
@@ -74,27 +74,34 @@ class ImageController extends Controller {
   /**
    * Töröl egy adott képet. (softDelete)
    */
-  public function delete(DeleteImageRequest $request) {
-    $image = ProductImage::find($request->imageId);
+  public function delete(Request $request, $id) {
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
 
+    $user = User::where([
+      ['id', '=', $cookieUser->userid],
+      ['apikey', '=', $cookieUser->apikey]
+    ])->first();
+
+    if (is_null($user)) {
+      abort(500);
+    }
+
+    $image = ProductImage::find($id);
+
+    if (is_null($image)) {
+      abort(500);
+    }
+
+    $product = $image->getProduct;
+    if ($product->creatorId != $user->id) {
+      abort(403);
+    }
     $image->deleted = 1;
-
 
     // Ha sikerül menteni, akkor beállítjuk, hogy sikeres volt
     // illetve, logoljuk az eseményt.
     if ($image->save()) {
-      $this->outcome = 'success';
-      $this->msg     = 'Sikeres művelet.';
-
-      LogController::deleteImage($request->productId, $request->userId, $image->id);
+      LogController::deleteImage($product->id, $user->id, $image->id);
     }
-
-    // Abban az esetben, ha rendes form-ot sütöttünk el,
-    // akkor irányítsuk vissza oda a felhasználót.
-    if ($route->route == 0) {
-      return redirect()->route('client_images')->with($this->outcome, $this->msg);
-    }
-
-    return $this->outcome . ": " . $this->msg;
   }
 }

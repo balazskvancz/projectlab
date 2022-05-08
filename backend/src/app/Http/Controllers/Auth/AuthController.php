@@ -18,20 +18,16 @@ class AuthController extends Controller {
    * @return void
    */
   public function tryToLogin(Request $request) {
-    $fields = json_decode($request->data);
-
-    $user = User::where('username', '=', $fields->name)->first();
+    $user = User::where('username', '=', $request->name)->first();
 
     // Ha nincs ilyen user, akkor adjunk vissza üres sztringet.
     if (is_null($user)) {
-
-      return json_encode("");
+      return "";
     }
 
     // Ha nem jó a jelszó, ami megadott.
-    if(!Hash::check($fields->password, $user->password)) {
-
-      return json_encode("");
+    if(!Hash::check($request->password, $user->password)) {
+      return "";
     }
 
     // Ekkor "sikeres" volt a bejelentkezés.

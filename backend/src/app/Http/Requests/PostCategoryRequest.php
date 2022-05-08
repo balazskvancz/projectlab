@@ -4,6 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use \App\Models\User;
+
+
+use Illuminate\Http\Request;
+
 class PostCategoryRequest extends FormRequest
 {
     /**
@@ -11,8 +16,20 @@ class PostCategoryRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize() {
-        return auth()->user()->role == 2;
+    public function authorize(Request $request) {
+      $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
+
+      $user = User::where([
+        ['id', '=', $cookieUser->userid],
+        ['apikey', '=', $cookieUser->apikey]
+      ])->first();
+
+
+      if (is_null($user) || $user->role == 1) {
+        return false;
+      }
+
+      return true;
     }
 
     /**

@@ -52,11 +52,12 @@ export default class Login extends React.Component<{}> {
       return
     }
 
-    const data = JSON.stringify({name, password})
+    // const data = JSON.stringify({name, password})
 
     // Mehet a request.
     await axios.post('http://localhost:8000/api/login', {
-      data
+      name, 
+      password 
     }).then((response) => {
 
       if (response.data === "") {
@@ -83,4 +84,5 @@ export default class Login extends React.Component<{}> {
     nameInput.classList.add('border', 'border-danger') 
     passInput.classList.add('border', 'border-danger') 
   }
+
 }

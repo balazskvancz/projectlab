@@ -20,7 +20,7 @@ class PostProductRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(Request $request) {
+    public function rules () {
       return [
         'name'          => 'required|max:191',
         'categoryId'    => 'required|numeric',
@@ -33,8 +33,7 @@ class PostProductRequest extends FormRequest
      *
      * @return array
      */
-    public function messages(Request $request) {
-
+    public function messages () {
       return [
         'required'      => 'A mező kitöltése kötelező.',
         'max'           => 'A mező hossza túl hosszú.',

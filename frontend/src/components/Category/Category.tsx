@@ -1,9 +1,11 @@
 import * as React from 'react'
 
-import type { ICategory, UserObject } from '../../definitions'
+import { EAdminRoute, ICategory, UserObject } from '../../definitions'
 import { ECommonRoute } from '../../definitions'
 
 import { request} from '../../common/request'
+
+import NewCategory from './NewCategory'
 
 interface IProps {
   user: UserObject
@@ -11,15 +13,14 @@ interface IProps {
 
 interface IState {
   categories: ICategory[]
+  newCategory: boolean 
 }
 export default class Category extends React.Component<IProps, IState>{
-
   constructor(props: IProps) {
     super(props)
 
-    this.state = { categories: [] }
+    this.state = { categories: [], newCategory: false }
   }
-
 
   /**
    * @returns {React.ReactNode} A lerenderelt elem.
@@ -27,9 +28,18 @@ export default class Category extends React.Component<IProps, IState>{
   render(): React.ReactNode {
     return (
       <div className="container mx-auto mt-5">
+        {
+          this.state.newCategory ? 
+            <NewCategory />
+          :
+            ''
+        }
+
         <div className="card">
-          <div className="card-header">
+          <div className="card-header text-center">
             <h2 className="p-2 text-center">Kategóriák kezelése</h2>
+
+            <button className='btn btn-secondary mx-auto' onClick={() => { this.setState({newCategory: true}) }}>Új hozzáadás</button>
           </div>
 
           <div className="card-body">
@@ -55,7 +65,7 @@ export default class Category extends React.Component<IProps, IState>{
                             <button className="btn btn-primary">Módosítás</button>
                           </td>
                           <td className="text-center">
-                            <button className="btn btn-danger">Törlés</button>
+                            <button className="btn btn-danger" onClick={() => this.onClickDelete(category.id)}>Törlés</button>
                           </td>
                         </tr> 
                       )
@@ -73,12 +83,28 @@ export default class Category extends React.Component<IProps, IState>{
   /**
    *  DOM-ba kerülés után adatok fetchelése.
    */
-  async componentDidMount(): Promise<void> {
-    const url = `${ ECommonRoute.Categories}?apikey=${ this.props.user.apikey }`
+  async componentDidMount(): Promise<void> { 
+    this.fetchData()
+  }
 
-    const categories = await request(url) as ICategory[]
+  /**
+   * Kategóriák lekérdezése API végpontról & state-be mentés.
+   */
+  private fetchData = async (): Promise<void> => {
+    const categories = await request(ECommonRoute.Categories) as ICategory[]
 
     this.setState({ categories })
   }
 
+  /**
+   * Egy adott kategória törlés gombjának eseménykezelője.
+   * @param {number} categoryId A törölni kívánt kategória azonosítója.
+   */
+  private onClickDelete = async (categoryId: number): Promise<void> => {
+    const url = `${ EAdminRoute.Categories}/${ categoryId }/delete`
+    const response = await request(url, 'POST') 
+
+    console.log(response)
+    this.fetchData()
+  }
 }

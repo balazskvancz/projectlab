@@ -13,6 +13,7 @@ use \App\Models\Login;
 use \App\Models\Product;
 use \App\Models\ProductCategory;
 use \App\Models\ProductImage;
+use \App\Models\User;
 
 /**
  *
@@ -49,21 +50,6 @@ class ClientController extends Controller {
   public function getProducts(Request $request) {
     $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
 
-    // $sorting = ProductController::getOrderOptions();
-    // $keys  = ProductController::getKeysWithLabel();
-
-    /*
-    $categories = ProductCategory::where('deleted', '=', 0)
-    ->orderBy('name', 'asc')
-    ->get();
-*/
-/*
-    $products = Product::with('getCategory')
-    ->where([
-      ['deleted', '=', 0],
-      ['creatorId', '=', $user->id]
-    ]);
-*/
     $products = Product::
       select(
         "products.id",
@@ -78,52 +64,51 @@ class ClientController extends Controller {
       ->orderBy('name', 'asc')
       ->get();
 
-    // $products = ProductController::orderBy($sort, $products);
-
-    /*
-    $data = array();
-
-    $data['categories']   = $categories;
-    $data['products']     = $products;
-    $data['keys']         = $keys;
-    $data['sorting']      = $sorting;
-    $data['currentSort']  = $sort;
-*/
     return json_encode($products);
   }
 
   /**
    * Megjelenít egy adott termékekt.
    */
-  public function displayProduct ($id) {
-    $fields = json_decode($request->data);
-
-    $user = User::find($field->userid);
+  public function getProduct (Request $request, $id) {
+    $cookieUser = json_decode(base64_decode($request->cookie('loggedUser')));
+    $user = User::where([
+      ['id', '=', $cookieUser->userid],
+      ['apikey', '=', $cookieUser->apikey]
+    ])->first();
 
     if (is_null($user)) {
-      return "";
+      return null;
     }
     // Létezik ilyen termék?
 
-    $product = Product::where([
-      ['id', '=', $id],
-      ['deleted', '=', 0],
-      ['creatorId', '=', $user->id]
+    $product = Product::select(
+      "products.id",
+      "products.name",
+      "products.price",
+      "products.description",
+      "product_categories.name AS categoryName"
+    )
+    ->join('product_categories', 'product_categories.id', '=', 'products.categoryId')
+    ->where([
+      ['products.id', '=', $id],
+      ['products.deleted', '=', 0],
+      ['products.creatorId', '=', $user->id]
     ])->first();
 
     // Van ilyen termék?
     if (is_null($product)) {
-      abort(404);
+      return null;
     }
 
-    $keys = ProductController::getKeysWithLabel();
+    $images = ProductImage::where([
+      ['productId', '=', $product->id],
+      ['deleted', '=', 0]
+    ])->get();
 
-    $data = array();
+    $product->images = $images;
 
-    $data['product'] = $product;
-    $data['keys']    = $keys;
-
-    return json_encode($data);
+    return $product;
   }
 
   /**

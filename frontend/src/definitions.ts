@@ -3,7 +3,7 @@ export enum EAdminRoute {
   Users = '/api/admin/users',
   Products = '/api/admin/products',
   Logs = '/api/admin/logs',
-
+  Categories = '/api/admin/categories',
 }
 
 export enum ECommonRoute {
@@ -14,6 +14,9 @@ export enum ECommonRoute {
 export enum EClientRoute {
   Dashboard = '/api/client/dashboard',
   Products = '/api/client/products',
+  Product = '/api/client/product',
+  ImageUpload = '/api/client/images/upload',
+  ImageDelete = '/api/client/images/delete',
 }
 
 export enum EUserRole {
@@ -56,6 +59,11 @@ export interface ILog {
   readonly created_at: string
 }
 
+export interface IProductImage {
+  readonly id: number
+  readonly path: string
+}
+
 export interface IProduct {
   readonly id: number
   readonly name: string
@@ -63,6 +71,7 @@ export interface IProduct {
   readonly description: string
   readonly username: string
   readonly categoryName: string
+  readonly images: IProductImage[]
 }
 
 export interface IAdminProductsResponse {
